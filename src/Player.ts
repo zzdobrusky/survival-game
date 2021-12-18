@@ -20,6 +20,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       right: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
 
+    this.scaleX *= 2;
+    this.scaleY *= 2;
+
     scene.add.existing(this);
   }
 
@@ -28,7 +31,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     scene.load.animation('female_anim', 'assets/animations/female_anim.json');
   }
 
-  get velocity() {
+  get velocity(): MatterJS.Vector {
     return this.body.velocity;
   }
 
@@ -53,6 +56,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
       this.anims.play('female_walk', true);
+      // flip player direction when flipping walking direction
+      const playerDirection = this.scaleX / Math.abs(this.scaleX);
+      if (
+        (Math.sign(this.velocity.x) === -1 && playerDirection === 1) ||
+        (Math.sign(this.velocity.x) === 1 && playerDirection === -1)
+      ) {
+        this.scaleX *= -1;
+      }
     } else {
       this.anims.play('female_idle', true);
     }
