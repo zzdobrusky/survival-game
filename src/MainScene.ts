@@ -35,9 +35,9 @@ export default class MainScene extends Phaser.Scene {
 
     // collisions
     if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.playerBouncer.getBounds())) {
-      // alert('dragon collision started');
+      // alert('collision started');
     } else {
-      // alert('dragon collision ended');
+      // alert('collision ended');
     }
   }
 }
