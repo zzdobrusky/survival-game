@@ -2,6 +2,7 @@ import Player from './Player';
 
 export default class MainScene extends Phaser.Scene {
   private player: Phaser.Physics.Matter.Sprite;
+  private playerBouncer: Phaser.Physics.Matter.Sprite;
 
   constructor() {
     super('MainScene');
@@ -19,9 +20,24 @@ export default class MainScene extends Phaser.Scene {
       texture: 'female',
       frame: 'townsfolk_f_idle_1',
     });
+
+    this.playerBouncer = new Player({
+      scene: this,
+      x: 200,
+      y: 100,
+      texture: 'female',
+      frame: 'townsfolk_f_idle_1',
+    });
   }
 
   update(): void {
     this.player.update();
+
+    // collisions
+    if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.playerBouncer.getBounds())) {
+      // alert('dragon collision started');
+    } else {
+      // alert('dragon collision ended');
+    }
   }
 }

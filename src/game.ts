@@ -1,5 +1,4 @@
 import * as Phaser from 'phaser';
-import PhaserMatterCollisionPlugin from 'phaser-matter-collision-plugin';
 import MainScene from './MainScene';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
@@ -18,15 +17,6 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
       debug: true,
       gravity: { y: 0 },
     },
-  },
-  plugins: {
-    scene: [
-      {
-        plugin: PhaserMatterCollisionPlugin,
-        key: 'matterCollision',
-        mapping: 'matterCollision',
-      },
-    ],
   },
 };
 

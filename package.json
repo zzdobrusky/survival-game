@@ -12,8 +12,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "phaser": "^3.50.0",
-    "phaser-matter-collision-plugin": "^1.0.0"
+    "phaser": "^3.50.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.0.2",
