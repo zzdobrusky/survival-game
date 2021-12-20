@@ -20,12 +20,12 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       right: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
 
-    this.scaleX *= 2;
-    this.scaleY *= 2;
+    // this.scaleX *= 2;
+    // this.scaleY *= 2;
 
     scene.add.existing(this);
 
-    this.setFrictionAir(0.35);
+    // this.setFrictionAir(0.35);
     this.setFixedRotation();
   }
 
