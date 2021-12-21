@@ -25,7 +25,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     scene.add.existing(this);
 
-    // this.setFrictionAir(0.35);
+    this.setFrictionAir(0.35);
     this.setFixedRotation();
   }
 
