@@ -25,15 +25,7 @@ export default class MainScene extends Phaser.Scene {
     layer1.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(layer1);
 
-    const tree = new Phaser.Physics.Matter.Sprite(this.matter.world, 50, 50, 'resources', 'tree');
-    const rock = new Phaser.Physics.Matter.Sprite(this.matter.world, 150, 150, 'resources', 'rock');
-    const bush = new Phaser.Physics.Matter.Sprite(this.matter.world, 250, 250, 'resources', 'bush');
-    tree.setStatic(true);
-    rock.setStatic(true);
-    bush.setStatic(true);
-    this.add.existing(tree);
-    this.add.existing(rock);
-    this.add.existing(bush);
+    this.addResources();
 
     this.player = new Player({
       scene: this,
@@ -41,6 +33,22 @@ export default class MainScene extends Phaser.Scene {
       y: 100,
       texture: 'female',
       frame: 'townsfolk_f_idle_1',
+    });
+  }
+
+  private addResources(): void {
+    const resources = this.map.getObjectLayer('Resources');
+    debugger;
+    resources.objects.forEach((resource) => {
+      const resourceItem = new Phaser.Physics.Matter.Sprite(
+        this.matter.world,
+        resource.x,
+        resource.y,
+        'resources',
+        resource.type,
+      );
+      resourceItem.setStatic(true);
+      this.add.existing(resourceItem);
     });
   }
 
