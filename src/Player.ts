@@ -11,7 +11,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   constructor(data) {
     const { scene, x, y, texture, frame } = data;
     super(scene.matter.world, x, y, texture, frame);
-
     // added WSAD keys
     this.wsadKeys = {
       up: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
@@ -23,13 +22,15 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     // this.scaleX *= 2;
     // this.scaleY *= 2;
 
-    scene.add.existing(this);
+    this.setCircle(12);
 
     this.setFrictionAir(0.35);
     this.setFixedRotation();
+
+    scene.add.existing(this);
   }
 
-  static preload(scene: Phaser.Scene): void {
+  public static preload(scene: Phaser.Scene): void {
     scene.load.atlas('female', 'assets/animations/female.png', 'assets/animations/female_atlas.json');
     scene.load.animation('female_anim', 'assets/animations/female_anim.json');
   }
