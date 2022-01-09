@@ -1,4 +1,5 @@
 import Player from './Player';
+import Resource from './Resource';
 
 export default class MainScene extends Phaser.Scene {
   private player: Phaser.Physics.Matter.Sprite;
@@ -10,9 +11,9 @@ export default class MainScene extends Phaser.Scene {
 
   public preload(): void {
     Player.preload(this);
+    Resource.preload(this);
     this.load.image('tiles', 'assets/images/RPG Nature Tileset.png');
     this.load.tilemapTiledJSON('map', 'assets/images/map.json');
-    this.load.atlas('resources', 'assets/images/resources.png', 'assets/images/resources_atlas.json');
   }
 
   public create(): void {
@@ -22,9 +23,10 @@ export default class MainScene extends Phaser.Scene {
     const tileset = this.map.addTilesetImage('RPG Nature Tileset', 'tiles', 32, 32, 0, 0);
     const layer1 = this.map.createLayer('Tile Layer 1', tileset, 0, 0);
     const layer2 = this.map.createLayer('Tile Layer 2', tileset, 0, 0);
-    this.addResources();
     layer1.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(layer1);
+
+    this.map.getObjectLayer('Resources').objects.forEach((resource) => new Resource({ scene: this, resource }));
 
     this.player = new Player({
       scene: this,
@@ -32,27 +34,6 @@ export default class MainScene extends Phaser.Scene {
       y: 300,
       texture: 'female',
       frame: 'townsfolk_f_idle_1',
-    });
-  }
-
-  private addResources(): void {
-    const resources = this.map.getObjectLayer('Resources');
-    resources.objects.forEach((resource) => {
-      const resItem = new Phaser.Physics.Matter.Sprite(
-        this.matter.world,
-        resource.x,
-        resource.y,
-        'resources',
-        resource.type,
-      );
-
-      const yOrigin = resource.properties.find(p => p.name === 'yOrigin').value;
-      resItem.x += resItem.width / 2;
-      resItem.y += resItem.height * (yOrigin - 1);
-      resItem.setCircle(12);
-      resItem.setStatic(true);
-      resItem.setOrigin(0.5, yOrigin);
-      this.add.existing(resItem);
     });
   }
 
