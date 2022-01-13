@@ -17,15 +17,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
   public create(): void {
-    // const map = this.make.tilemap({ key: 'map' });
     this.map = this.make.tilemap({ key: 'map' });
-    // this.map = map;
     const tileset = this.map.addTilesetImage('RPG Nature Tileset', 'tiles', 32, 32, 0, 0);
     const layer1 = this.map.createLayer('Tile Layer 1', tileset, 0, 0);
     const layer2 = this.map.createLayer('Tile Layer 2', tileset, 0, 0);
     layer1.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(layer1);
 
+    // add resourcers
     this.map.getObjectLayer('Resources').objects.forEach((resource) => new Resource({ scene: this, resource }));
 
     this.player = new Player({
