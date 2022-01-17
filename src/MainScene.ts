@@ -4,6 +4,7 @@ import Resource from './Resource';
 export default class MainScene extends Phaser.Scene {
   private player: Phaser.Physics.Matter.Sprite;
   private map: Phaser.Tilemaps.Tilemap;
+  private resources: Resource[];
 
   constructor() {
     super('MainScene');
@@ -24,8 +25,10 @@ export default class MainScene extends Phaser.Scene {
     layer1.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(layer1);
 
-    // add resourcers
-    this.map.getObjectLayer('Resources').objects.forEach((resource) => new Resource({ scene: this, resource }));
+    // add resources
+    this.resources = this.map
+      .getObjectLayer('Resources')
+      .objects.map((resource) => new Resource({ scene: this, resource }));
 
     this.player = new Player({
       scene: this,
@@ -39,11 +42,13 @@ export default class MainScene extends Phaser.Scene {
   update(): void {
     this.player.update();
 
-    // collisions
-    // if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.playerBouncer.getBounds())) {
-    //   // alert('collision started');
-    // } else {
-    //   // alert('collision ended');
-    // }
+    // collisions with resources
+    this.resources.forEach((resource) => {
+      if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), resource.getBounds())) {
+        console.log('collision started');
+      } else {
+        // console.log('collision ended');
+      }
+    });
   }
 }

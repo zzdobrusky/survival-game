@@ -12,7 +12,7 @@ type KeyboardKeys = {
 };
 
 export default class Player extends Phaser.Physics.Matter.Sprite {
-  private keys: KeyboardKeys;
+  private readonly KEYS: KeyboardKeys;
   private spriteWeapon: Phaser.GameObjects.Sprite;
   private weaponRotation: number;
   private weaponRotationDirection: number;
@@ -21,15 +21,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     const { scene, x, y, texture, frame } = data;
     super(scene.matter.world, x, y, texture, frame);
     scene.add.existing(this);
-    // Weapen
-    this.spriteWeapon = new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'items', 162);
-    this.spriteWeapon.setScale(0.8);
-    this.spriteWeapon.setOrigin(0.25, 0.75);
-    this.weaponRotationDirection = 1;
-    scene.add.existing(this.spriteWeapon);
 
     // added WSAD keys
-    this.keys = {
+    this.KEYS = {
       upW: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
       downS: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
       leftA: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
@@ -44,7 +38,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     this.setCircle(12);
     this.setFrictionAir(0.35);
-    this.setFixedRotation();
+    // this.setFixedRotation(); // doesn't work
+
+    // Weapen
+    this.spriteWeapon = new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'items', 162);
+    this.spriteWeapon.setScale(0.8);
+    this.spriteWeapon.setOrigin(0.25, 0.75);
+    this.weaponRotationDirection = 1;
+    scene.add.existing(this.spriteWeapon);
   }
 
   public static preload(scene: Phaser.Scene): void {
@@ -62,21 +63,23 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     const playerVelocity = new Phaser.Math.Vector2();
 
     // move player around
-    if (this.keys.leftA.isDown || this.keys.leftArrow.isDown) {
+    if (this.KEYS.leftA.isDown || this.KEYS.leftArrow.isDown) {
       playerVelocity.x = -1;
-    } else if (this.keys.rightD.isDown || this.keys.rightArrow.isDown) {
+    } else if (this.KEYS.rightD.isDown || this.KEYS.rightArrow.isDown) {
       playerVelocity.x = 1;
     }
 
-    if (this.keys.upW.isDown || this.keys.upArrow.isDown) {
+    if (this.KEYS.upW.isDown || this.KEYS.upArrow.isDown) {
       playerVelocity.y = -1;
-    } else if (this.keys.downS.isDown || this.keys.downArrow.isDown) {
+    } else if (this.KEYS.downS.isDown || this.KEYS.downArrow.isDown) {
       playerVelocity.y = 1;
     }
 
     playerVelocity.normalize();
     playerVelocity.scale(speed);
     this.setVelocity(playerVelocity.x, playerVelocity.y);
+    // fix for keeping player rotation constant
+    this.setAngle(0);
 
     if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
       this.anims.play('female_walk', true);
@@ -94,15 +97,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       this.anims.play('female_idle', true);
     }
 
-    this.spriteWeapon.setPosition(this.x, this.y);
     // weapon rotate
-    if (this.keys.pointer.isDown || this.keys.EKey.isDown) {
-      console.log('weaponRotationDirection: ', this.weaponRotationDirection);
+    this.spriteWeapon.setPosition(this.x, this.y);
+    if (this.KEYS.pointer.isDown || this.KEYS.EKey.isDown) {
       this.weaponRotation += this.weaponRotationDirection * 6;
     } else {
       this.weaponRotation = 0;
     }
-    console.log(this.weaponRotation);
+
     if (this.weaponRotation > 100 || this.weaponRotation < -100) {
       this.weaponRotation = 0;
     }
