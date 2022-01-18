@@ -5,9 +5,11 @@ export default class MainScene extends Phaser.Scene {
   private player: Phaser.Physics.Matter.Sprite;
   private map: Phaser.Tilemaps.Tilemap;
   private resources: Resource[];
+  private isColliding: boolean;
 
   constructor() {
     super('MainScene');
+    this.isColliding = true;
   }
 
   public preload(): void {
@@ -43,12 +45,20 @@ export default class MainScene extends Phaser.Scene {
     this.player.update();
 
     // collisions with resources
-    this.resources.forEach((resource) => {
-      if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), resource.getBounds())) {
+    this.resources.every((resource) => {
+      if (
+        Phaser.Geom.Intersects.CircleToCircle(
+          new Phaser.Geom.Circle(this.player.x, this.player.y, 12),
+          new Phaser.Geom.Circle(resource.x, resource.y, 12),
+        )
+      ) {
         console.log('collision obj: ', resource.type);
-      } else {
-        // console.log('collision ended');
+        this.isColliding = true;
+        return false;
       }
+      // console.log('collision ended');
+      this.isColliding = false;
+      return true;
     });
   }
 }
