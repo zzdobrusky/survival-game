@@ -32,8 +32,8 @@ export default class MainScene extends Phaser.Scene {
 
     this.player = new Player({
       scene: this,
-      x: 450,
-      y: 300,
+      x: 430,
+      y: 330,
       texture: 'female',
       frame: 'townsfolk_f_idle_1',
     });
@@ -45,7 +45,7 @@ export default class MainScene extends Phaser.Scene {
     // collisions with resources
     this.resources.forEach((resource) => {
       if (Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), resource.getBounds())) {
-        console.log('collision started');
+        console.log('collision obj: ', resource.type);
       } else {
         // console.log('collision ended');
       }
