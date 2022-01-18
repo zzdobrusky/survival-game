@@ -56,7 +56,6 @@ export default class MainScene extends Phaser.Scene {
         this.isColliding = true;
         return false;
       }
-      // console.log('collision ended');
       this.isColliding = false;
       return true;
     });
