@@ -2,14 +2,16 @@ import Player from './Player';
 import Resource from './Resource';
 
 export default class MainScene extends Phaser.Scene {
-  private player: Phaser.Physics.Matter.Sprite;
+  private player: Player;
   private map: Phaser.Tilemaps.Tilemap;
   private resources: Resource[];
-  private isColliding: boolean;
+  private collidingResource: Resource;
+  private colliding: boolean;
 
   constructor() {
     super('MainScene');
-    this.isColliding = true;
+    this.collidingResource = null;
+    this.colliding = false;
   }
 
   public preload(): void {
@@ -41,23 +43,39 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
-  update(): void {
+  public update(): void {
     this.player.update();
 
     // collisions with resources
-    this.resources.every((resource) => {
-      if (
-        Phaser.Geom.Intersects.CircleToCircle(
-          new Phaser.Geom.Circle(this.player.x, this.player.y, 12),
-          new Phaser.Geom.Circle(resource.x, resource.y, 12),
-        )
-      ) {
-        console.log('collision obj: ', resource.type);
-        this.isColliding = true;
-        return false;
+    this.collidingResource = this.resources.find((resource) =>
+      Phaser.Geom.Intersects.CircleToCircle(
+        new Phaser.Geom.Circle(this.player.x, this.player.y, 12),
+        new Phaser.Geom.Circle(resource.x, resource.y, 12),
+      ),
+    );
+
+    if (this.collidingResource && !this.colliding) {
+      console.log('started collision with: ', this.collidingResource.type);
+      this.colliding = true;
+      this.player.setCollidingResource(this.collidingResource);
+    }
+
+    if (!this.collidingResource && this.colliding) {
+      console.log('ended collision');
+      this.colliding = false;
+      this.player.setCollidingResource(this.collidingResource);
+    }
+  }
+
+  public removeResource(resource: Resource): void {
+    if (resource) {
+      // first remove from the array if exists
+      const index = this.resources.indexOf(resource);
+      if (index !== -1) {
+        this.resources.splice(index, 1);
+        // then destroy
+        resource.destroy();
       }
-      this.isColliding = false;
-      return true;
-    });
+    }
   }
 }

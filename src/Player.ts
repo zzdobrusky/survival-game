@@ -1,3 +1,6 @@
+import MainScene from './MainScene';
+import Resource from './Resource';
+
 type KeyboardKeys = {
   upW: Phaser.Input.Keyboard.Key;
   downS: Phaser.Input.Keyboard.Key;
@@ -16,24 +19,27 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   private spriteWeapon: Phaser.GameObjects.Sprite;
   private weaponRotation: number;
   private weaponRotationDirection: number;
+  private collidingResource: Resource;
+  private mainScene: MainScene;
 
   constructor(data) {
     const { scene, x, y, texture, frame } = data;
     super(scene.matter.world, x, y, texture, frame);
-    scene.add.existing(this);
+    this.mainScene = scene;
+    this.mainScene.add.existing(this);
 
     // added WSAD keys
     this.KEYS = {
-      upW: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-      downS: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-      leftA: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-      rightD: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-      rightArrow: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-      upArrow: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-      downArrow: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
-      leftArrow: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
-      EKey: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-      pointer: scene.input.activePointer,
+      upW: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+      downS: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+      leftA: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+      rightD: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+      rightArrow: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
+      upArrow: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
+      downArrow: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
+      leftArrow: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
+      EKey: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+      pointer: this.mainScene.input.activePointer,
     };
 
     this.setCircle(12);
@@ -41,11 +47,15 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     // this.setFixedRotation(); // doesn't work
 
     // Weapen
-    this.spriteWeapon = new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'items', 162);
+    this.spriteWeapon = new Phaser.GameObjects.Sprite(this.mainScene, 0, 0, 'items', 162);
     this.spriteWeapon.setScale(0.8);
     this.spriteWeapon.setOrigin(0.25, 0.75);
     this.weaponRotationDirection = 1;
     scene.add.existing(this.spriteWeapon);
+  }
+
+  public setCollidingResource(resource: Resource): void {
+    this.collidingResource = resource;
   }
 
   public static preload(scene: Phaser.Scene): void {
@@ -106,8 +116,20 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     if (this.weaponRotation > 100 || this.weaponRotation < -100) {
+      this.whackStuff();
       this.weaponRotation = 0;
     }
     this.spriteWeapon.setAngle(this.weaponRotation);
+  }
+
+  private whackStuff(): void {
+    if (this.collidingResource) {
+      this.collidingResource.hit();
+      if (this.collidingResource.dead) {
+        this.mainScene.removeResource(this.collidingResource);
+      }
+    } else {
+      console.log('nothing to whack!');
+    }
   }
 }
