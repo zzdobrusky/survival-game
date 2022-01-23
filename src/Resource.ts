@@ -8,7 +8,7 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
   private _mainScene: MainScene;
   private _circle: Phaser.Geom.Circle;
 
-  constructor({ scene, resource }) {
+  constructor({ scene, resource }: { scene: MainScene; resource: any }) {
     super(scene.matter.world, resource.x, resource.y, 'resources', resource.type);
     this._mainScene = scene;
     this._mainScene.add.existing(this);

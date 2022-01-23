@@ -25,7 +25,19 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   private _mainScene: MainScene;
   private _circle: Phaser.Geom.Circle;
 
-  constructor({ scene, x, y, texture, frame }) {
+  constructor({
+    scene,
+    x,
+    y,
+    texture,
+    frame,
+  }: {
+    scene: MainScene;
+    x: number;
+    y: number;
+    texture: string | Phaser.Textures.Texture;
+    frame: string | number;
+  }) {
     super(scene.matter.world, x, y, texture, frame);
     this._mainScene = scene;
     this._mainScene.add.existing(this);
