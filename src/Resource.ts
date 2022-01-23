@@ -27,7 +27,7 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
 
   public static preload(scene: Phaser.Scene): void {
     scene.load.atlas('resources', 'assets/images/resources.png', 'assets/images/resources_atlas.json');
-    scene.load.audio('tree', 'assets/audio/tree.mp3');
+    scene.load.audio('tree', 'assets/audio/tree.wav');
     scene.load.audio('rock', 'assets/audio/rock.wav');
     scene.load.audio('bush', 'assets/audio/bush.wav');
   }
