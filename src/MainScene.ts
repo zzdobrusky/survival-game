@@ -58,7 +58,7 @@ export default class MainScene extends Phaser.Scene {
 
     if (!this._collidingResource && this._colliding) {
       this._colliding = false;
-      this._player.setCollidingResource(this._collidingResource);
+      this._player.setCollidingResource(null);
     }
   }
 
@@ -70,6 +70,9 @@ export default class MainScene extends Phaser.Scene {
         this._resources.splice(index, 1);
         // then destroy
         resource.destroy();
+        // and reset collisions
+        this._colliding = false;
+        this._player.setCollidingResource(null);
       }
     }
   }
