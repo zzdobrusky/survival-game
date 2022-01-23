@@ -25,8 +25,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   private _mainScene: MainScene;
   private _circle: Phaser.Geom.Circle;
 
-  constructor(data) {
-    const { scene, x, y, texture, frame } = data;
+  constructor({ scene, x, y, texture, frame }) {
     super(scene.matter.world, x, y, texture, frame);
     this._mainScene = scene;
     this._mainScene.add.existing(this);
@@ -135,8 +134,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       if (this._collidingResource.dead) {
         this._mainScene.removeResource(this._collidingResource);
       }
-    } else {
-      console.log('nothing to whack!');
     }
   }
 

@@ -25,7 +25,7 @@ export default class MainScene extends Phaser.Scene {
     this._map = this.make.tilemap({ key: 'map' });
     const tileset = this._map.addTilesetImage('RPG Nature Tileset', 'tiles', 32, 32, 0, 0);
     const layer1 = this._map.createLayer('Tile Layer 1', tileset, 0, 0);
-    const layer2 = this._map.createLayer('Tile Layer 2', tileset, 0, 0);
+    this._map.createLayer('Tile Layer 2', tileset, 0, 0);
     layer1.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(layer1);
 
@@ -52,13 +52,11 @@ export default class MainScene extends Phaser.Scene {
     );
 
     if (this._collidingResource && !this._colliding) {
-      console.log('started collision with: ', this._collidingResource.type);
       this._colliding = true;
       this._player.setCollidingResource(this._collidingResource);
     }
 
     if (!this._collidingResource && this._colliding) {
-      console.log('ended collision');
       this._colliding = false;
       this._player.setCollidingResource(this._collidingResource);
     }

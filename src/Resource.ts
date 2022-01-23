@@ -8,8 +8,7 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
   private _mainScene: MainScene;
   private _circle: Phaser.Geom.Circle;
 
-  constructor(data) {
-    const { scene, resource } = data;
+  constructor({ scene, resource }) {
     super(scene.matter.world, resource.x, resource.y, 'resources', resource.type);
     this._mainScene = scene;
     this._mainScene.add.existing(this);
@@ -36,12 +35,8 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
     return this._circle;
   }
 
-  // public remove(resources): void {
-
-  // }
-
   public hit(): void {
-    // if (this.sound) this.sound.play();
+    // if (this.sound) this.sound.play(); // TODO:
     this.health--;
     console.log(`Hitting: ${this.type} Health: ${this.health}`);
   }
