@@ -48,10 +48,7 @@ export default class MainScene extends Phaser.Scene {
 
     // collisions with resources
     this._collidingResource = this._resources.find((resource) =>
-      Phaser.Geom.Intersects.CircleToCircle(
-        new Phaser.Geom.Circle(this._player.x, this._player.y, 12),
-        new Phaser.Geom.Circle(resource.x, resource.y, 12),
-      ),
+      Phaser.Geom.Intersects.CircleToCircle(this._player.circle, resource.circle),
     );
 
     if (this._collidingResource && !this._colliding) {

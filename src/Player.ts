@@ -14,6 +14,8 @@ type KeyboardKeys = {
   pointer: Phaser.Input.Pointer;
 };
 
+const CIRCLE_RADIUS = 15;
+
 export default class Player extends Phaser.Physics.Matter.Sprite {
   private readonly _KEYS: KeyboardKeys;
   private _spriteWeapon: Phaser.GameObjects.Sprite;
@@ -21,6 +23,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   private _weaponRotationDirection: number;
   private _collidingResource: Resource;
   private _mainScene: MainScene;
+  private _circle: Phaser.Geom.Circle;
 
   constructor(data) {
     const { scene, x, y, texture, frame } = data;
@@ -42,9 +45,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       pointer: this._mainScene.input.activePointer,
     };
 
-    this.setCircle(12);
+    this.setCircle(CIRCLE_RADIUS);
     this.setFrictionAir(0.35);
-    // this.setFixedRotation(); // doesn't work
 
     // Weapen
     this._spriteWeapon = new Phaser.GameObjects.Sprite(this._mainScene, 0, 0, 'items', 162);
@@ -52,6 +54,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this._spriteWeapon.setOrigin(0.25, 0.75);
     this._weaponRotationDirection = 1;
     scene.add.existing(this._spriteWeapon);
+
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
   }
 
   public setCollidingResource(resource: Resource): void {
@@ -120,6 +124,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       this._weaponRotation = 0;
     }
     this._spriteWeapon.setAngle(this._weaponRotation);
+
+    // TODO: might be a better way -> since player is moving it needs to update its circle
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
   }
 
   private whackStuff(): void {
@@ -131,5 +138,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     } else {
       console.log('nothing to whack!');
     }
+  }
+
+  get circle(): Phaser.Geom.Circle {
+    return this._circle;
   }
 }

@@ -1,9 +1,12 @@
 import MainScene from './MainScene';
 
+const CIRCLE_RADIUS = 12;
+
 export default class Resource extends Phaser.Physics.Matter.Sprite {
   public health: number;
 
   private _mainScene: MainScene;
+  private _circle: Phaser.Geom.Circle;
 
   constructor(data) {
     const { scene, resource } = data;
@@ -13,7 +16,8 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
     const yOrigin = resource.properties.find((p) => p.name === 'yOrigin').value;
     this.x += this.width / 2;
     this.y += this.height * (yOrigin - 1);
-    this.setCircle(12);
+    this.setCircle(CIRCLE_RADIUS);
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
     this.setStatic(true);
     this.setOrigin(0.5, yOrigin);
     this.type = resource.type;
@@ -26,6 +30,10 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
 
   get dead(): boolean {
     return this.health <= 0;
+  }
+
+  get circle(): Phaser.Geom.Circle {
+    return this._circle;
   }
 
   // public remove(resources): void {
