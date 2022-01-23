@@ -2,16 +2,16 @@ import Player from './Player';
 import Resource from './Resource';
 
 export default class MainScene extends Phaser.Scene {
-  private player: Player;
-  private map: Phaser.Tilemaps.Tilemap;
-  private resources: Resource[];
-  private collidingResource: Resource;
-  private colliding: boolean;
+  private _player: Player;
+  private _map: Phaser.Tilemaps.Tilemap;
+  private _resources: Resource[];
+  private _collidingResource: Resource;
+  private _colliding: boolean;
 
   constructor() {
     super('MainScene');
-    this.collidingResource = null;
-    this.colliding = false;
+    this._collidingResource = null;
+    this._colliding = false;
   }
 
   public preload(): void {
@@ -22,19 +22,19 @@ export default class MainScene extends Phaser.Scene {
   }
 
   public create(): void {
-    this.map = this.make.tilemap({ key: 'map' });
-    const tileset = this.map.addTilesetImage('RPG Nature Tileset', 'tiles', 32, 32, 0, 0);
-    const layer1 = this.map.createLayer('Tile Layer 1', tileset, 0, 0);
-    const layer2 = this.map.createLayer('Tile Layer 2', tileset, 0, 0);
+    this._map = this.make.tilemap({ key: 'map' });
+    const tileset = this._map.addTilesetImage('RPG Nature Tileset', 'tiles', 32, 32, 0, 0);
+    const layer1 = this._map.createLayer('Tile Layer 1', tileset, 0, 0);
+    const layer2 = this._map.createLayer('Tile Layer 2', tileset, 0, 0);
     layer1.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(layer1);
 
     // add resources
-    this.resources = this.map
+    this._resources = this._map
       .getObjectLayer('Resources')
       .objects.map((resource) => new Resource({ scene: this, resource }));
 
-    this.player = new Player({
+    this._player = new Player({
       scene: this,
       x: 430,
       y: 330,
@@ -44,35 +44,35 @@ export default class MainScene extends Phaser.Scene {
   }
 
   public update(): void {
-    this.player.update();
+    this._player.update();
 
     // collisions with resources
-    this.collidingResource = this.resources.find((resource) =>
+    this._collidingResource = this._resources.find((resource) =>
       Phaser.Geom.Intersects.CircleToCircle(
-        new Phaser.Geom.Circle(this.player.x, this.player.y, 12),
+        new Phaser.Geom.Circle(this._player.x, this._player.y, 12),
         new Phaser.Geom.Circle(resource.x, resource.y, 12),
       ),
     );
 
-    if (this.collidingResource && !this.colliding) {
-      console.log('started collision with: ', this.collidingResource.type);
-      this.colliding = true;
-      this.player.setCollidingResource(this.collidingResource);
+    if (this._collidingResource && !this._colliding) {
+      console.log('started collision with: ', this._collidingResource.type);
+      this._colliding = true;
+      this._player.setCollidingResource(this._collidingResource);
     }
 
-    if (!this.collidingResource && this.colliding) {
+    if (!this._collidingResource && this._colliding) {
       console.log('ended collision');
-      this.colliding = false;
-      this.player.setCollidingResource(this.collidingResource);
+      this._colliding = false;
+      this._player.setCollidingResource(this._collidingResource);
     }
   }
 
   public removeResource(resource: Resource): void {
     if (resource) {
       // first remove from the array if exists
-      const index = this.resources.indexOf(resource);
+      const index = this._resources.indexOf(resource);
       if (index !== -1) {
-        this.resources.splice(index, 1);
+        this._resources.splice(index, 1);
         // then destroy
         resource.destroy();
       }

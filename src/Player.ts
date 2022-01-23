@@ -15,31 +15,31 @@ type KeyboardKeys = {
 };
 
 export default class Player extends Phaser.Physics.Matter.Sprite {
-  private readonly KEYS: KeyboardKeys;
-  private spriteWeapon: Phaser.GameObjects.Sprite;
-  private weaponRotation: number;
-  private weaponRotationDirection: number;
-  private collidingResource: Resource;
-  private mainScene: MainScene;
+  private readonly _KEYS: KeyboardKeys;
+  private _spriteWeapon: Phaser.GameObjects.Sprite;
+  private _weaponRotation: number;
+  private _weaponRotationDirection: number;
+  private _collidingResource: Resource;
+  private _mainScene: MainScene;
 
   constructor(data) {
     const { scene, x, y, texture, frame } = data;
     super(scene.matter.world, x, y, texture, frame);
-    this.mainScene = scene;
-    this.mainScene.add.existing(this);
+    this._mainScene = scene;
+    this._mainScene.add.existing(this);
 
     // added WSAD keys
-    this.KEYS = {
-      upW: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-      downS: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-      leftA: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-      rightD: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-      rightArrow: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-      upArrow: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-      downArrow: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
-      leftArrow: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
-      EKey: this.mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-      pointer: this.mainScene.input.activePointer,
+    this._KEYS = {
+      upW: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+      downS: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+      leftA: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+      rightD: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+      rightArrow: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
+      upArrow: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
+      downArrow: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
+      leftArrow: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
+      EKey: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+      pointer: this._mainScene.input.activePointer,
     };
 
     this.setCircle(12);
@@ -47,15 +47,15 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     // this.setFixedRotation(); // doesn't work
 
     // Weapen
-    this.spriteWeapon = new Phaser.GameObjects.Sprite(this.mainScene, 0, 0, 'items', 162);
-    this.spriteWeapon.setScale(0.8);
-    this.spriteWeapon.setOrigin(0.25, 0.75);
-    this.weaponRotationDirection = 1;
-    scene.add.existing(this.spriteWeapon);
+    this._spriteWeapon = new Phaser.GameObjects.Sprite(this._mainScene, 0, 0, 'items', 162);
+    this._spriteWeapon.setScale(0.8);
+    this._spriteWeapon.setOrigin(0.25, 0.75);
+    this._weaponRotationDirection = 1;
+    scene.add.existing(this._spriteWeapon);
   }
 
   public setCollidingResource(resource: Resource): void {
-    this.collidingResource = resource;
+    this._collidingResource = resource;
   }
 
   public static preload(scene: Phaser.Scene): void {
@@ -73,15 +73,15 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     const playerVelocity = new Phaser.Math.Vector2();
 
     // move player around
-    if (this.KEYS.leftA.isDown || this.KEYS.leftArrow.isDown) {
+    if (this._KEYS.leftA.isDown || this._KEYS.leftArrow.isDown) {
       playerVelocity.x = -1;
-    } else if (this.KEYS.rightD.isDown || this.KEYS.rightArrow.isDown) {
+    } else if (this._KEYS.rightD.isDown || this._KEYS.rightArrow.isDown) {
       playerVelocity.x = 1;
     }
 
-    if (this.KEYS.upW.isDown || this.KEYS.upArrow.isDown) {
+    if (this._KEYS.upW.isDown || this._KEYS.upArrow.isDown) {
       playerVelocity.y = -1;
-    } else if (this.KEYS.downS.isDown || this.KEYS.downArrow.isDown) {
+    } else if (this._KEYS.downS.isDown || this._KEYS.downArrow.isDown) {
       playerVelocity.y = 1;
     }
 
@@ -100,33 +100,33 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         (Math.sign(this.velocity.x) === 1 && playerDirection === -1)
       ) {
         this.scaleX *= -1;
-        this.spriteWeapon.scaleX *= -1;
-        this.weaponRotationDirection *= -1;
+        this._spriteWeapon.scaleX *= -1;
+        this._weaponRotationDirection *= -1;
       }
     } else {
       this.anims.play('female_idle', true);
     }
 
     // weapon rotate
-    this.spriteWeapon.setPosition(this.x, this.y);
-    if (this.KEYS.pointer.isDown || this.KEYS.EKey.isDown) {
-      this.weaponRotation += this.weaponRotationDirection * 6;
+    this._spriteWeapon.setPosition(this.x, this.y);
+    if (this._KEYS.pointer.isDown || this._KEYS.EKey.isDown) {
+      this._weaponRotation += this._weaponRotationDirection * 6;
     } else {
-      this.weaponRotation = 0;
+      this._weaponRotation = 0;
     }
 
-    if (this.weaponRotation > 100 || this.weaponRotation < -100) {
+    if (this._weaponRotation > 100 || this._weaponRotation < -100) {
       this.whackStuff();
-      this.weaponRotation = 0;
+      this._weaponRotation = 0;
     }
-    this.spriteWeapon.setAngle(this.weaponRotation);
+    this._spriteWeapon.setAngle(this._weaponRotation);
   }
 
   private whackStuff(): void {
-    if (this.collidingResource) {
-      this.collidingResource.hit();
-      if (this.collidingResource.dead) {
-        this.mainScene.removeResource(this.collidingResource);
+    if (this._collidingResource) {
+      this._collidingResource.hit();
+      if (this._collidingResource.dead) {
+        this._mainScene.removeResource(this._collidingResource);
       }
     } else {
       console.log('nothing to whack!');

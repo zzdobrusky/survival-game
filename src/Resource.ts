@@ -2,13 +2,14 @@ import MainScene from './MainScene';
 
 export default class Resource extends Phaser.Physics.Matter.Sprite {
   public health: number;
-  private mainScene: MainScene;
+
+  private _mainScene: MainScene;
 
   constructor(data) {
     const { scene, resource } = data;
     super(scene.matter.world, resource.x, resource.y, 'resources', resource.type);
-    this.mainScene = scene;
-    this.mainScene.add.existing(this);
+    this._mainScene = scene;
+    this._mainScene.add.existing(this);
     const yOrigin = resource.properties.find((p) => p.name === 'yOrigin').value;
     this.x += this.width / 2;
     this.y += this.height * (yOrigin - 1);
