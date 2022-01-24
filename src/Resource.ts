@@ -1,3 +1,4 @@
+import DropItem from './DropItem';
 import MainScene from './MainScene';
 
 const CIRCLE_RADIUS = 12;
@@ -7,6 +8,7 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
   private _mainScene: MainScene;
   private _circle: Phaser.Geom.Circle;
   private _sound;
+  private _drops: number[];
 
   constructor({ scene, resource }: { scene: MainScene; resource: any }) {
     super(scene.matter.world, resource.x, resource.y, 'resources', resource.type);
@@ -21,6 +23,7 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
     this.setOrigin(0.5, yOrigin);
     this.type = resource.type;
     this._health = 5;
+    this._drops = JSON.parse(resource.properties.find((p) => p.name === 'drops').value);
     // add specific sound by the resource type
     this._sound = this._mainScene.sound.add(this.type, { loop: false });
   }
@@ -41,9 +44,13 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
   }
 
   public hit(): void {
-    // if (this.sound) this.sound.play(); // TODO:
     this._health--;
     this._sound.play();
     console.log(`Hitting: ${this.type} Health: ${this._health}`);
+    if (this.dead) {
+      this._drops.forEach(
+        (drop) => new DropItem({ scene: this._mainScene, x: this.x, y: this.y, texture: this.type, frame: drop }),
+      );
+    }
   }
 }
