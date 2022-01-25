@@ -8,11 +8,13 @@ export default class MainScene extends Phaser.Scene {
   private _resources: Resource[];
   private _collidingResource: Resource;
   private _colliding: boolean;
+  private _droppedItems: DropItem[];
 
   constructor() {
     super('MainScene');
     this._collidingResource = null;
     this._colliding = false;
+    this._droppedItems = [];
   }
 
   public preload(): void {
@@ -62,6 +64,11 @@ export default class MainScene extends Phaser.Scene {
       this._colliding = false;
       this._player.setCollidingResource(null);
     }
+  }
+
+  public addDroppedItem(droppedItem: DropItem): void {
+    this._droppedItems.push(droppedItem); // split into 3 different arrays (for rock, tree, bush?)
+    console.log('this._droppedItems: ', this._droppedItems);
   }
 
   public removeResource(resource: Resource): void {

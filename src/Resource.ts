@@ -46,11 +46,18 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
   public hit(): void {
     this._health--;
     this._sound.play();
-    console.log(`Hitting: ${this.type} Health: ${this._health}`);
     if (this.dead) {
-      this._drops.forEach(
-        (drop) => new DropItem({ scene: this._mainScene, x: this.x, y: this.y, texture: 'items', frame: drop }),
-      );
+      this._drops.forEach((drop) => {
+        const newDropItem = new DropItem({
+          scene: this._mainScene,
+          x: this.x,
+          y: this.y,
+          texture: 'items',
+          frame: drop,
+          type: this.type,
+        });
+        this._mainScene.addDroppedItem(newDropItem);
+      });
     }
   }
 }
