@@ -7,7 +7,7 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
   private _health: number;
   private _mainScene: MainScene;
   private _circle: Phaser.Geom.Circle;
-  private _sound;
+  private _sound: Phaser.Sound.BaseSound;
   private _drops: number[];
 
   constructor({ scene, resource }: { scene: MainScene; resource: any }) {
@@ -49,7 +49,7 @@ export default class Resource extends Phaser.Physics.Matter.Sprite {
     console.log(`Hitting: ${this.type} Health: ${this._health}`);
     if (this.dead) {
       this._drops.forEach(
-        (drop) => new DropItem({ scene: this._mainScene, x: this.x, y: this.y, texture: this.type, frame: drop }),
+        (drop) => new DropItem({ scene: this._mainScene, x: this.x, y: this.y, texture: 'items', frame: drop }),
       );
     }
   }

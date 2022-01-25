@@ -1,3 +1,4 @@
+import DropItem from './DropItem';
 import Player from './Player';
 import Resource from './Resource';
 
@@ -17,6 +18,7 @@ export default class MainScene extends Phaser.Scene {
   public preload(): void {
     Player.preload(this);
     Resource.preload(this);
+    DropItem.preload(this);
     this.load.image('tiles', 'assets/images/RPG Nature Tileset.png');
     this.load.tilemapTiledJSON('map', 'assets/images/map.json');
   }
