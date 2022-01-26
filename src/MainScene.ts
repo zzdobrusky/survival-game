@@ -7,14 +7,18 @@ export default class MainScene extends Phaser.Scene {
   private _map: Phaser.Tilemaps.Tilemap;
   private _resources: Resource[];
   private _collidingResource: Resource;
-  private _colliding: boolean;
+  private _collidingWithResource: boolean;
   private _droppedItems: DropItem[];
+  private _collidingDroppedItem: DropItem;
+  private _collidingWithDroppedItem: boolean;
 
   constructor() {
     super('MainScene');
     this._collidingResource = null;
-    this._colliding = false;
+    this._collidingWithResource = false;
     this._droppedItems = [];
+    this._collidingDroppedItem = null;
+    this._collidingWithDroppedItem = false;
   }
 
   public preload(): void {
@@ -49,26 +53,42 @@ export default class MainScene extends Phaser.Scene {
 
   public update(): void {
     this._player.update();
+    this._droppedItems.forEach((dropItem) => dropItem.update());
 
     // collisions with resources
     this._collidingResource = this._resources.find((resource) =>
       Phaser.Geom.Intersects.CircleToCircle(this._player.circle, resource.circle),
     );
 
-    if (this._collidingResource && !this._colliding) {
-      this._colliding = true;
+    if (this._collidingResource && !this._collidingWithResource) {
+      this._collidingWithResource = true;
       this._player.setCollidingResource(this._collidingResource);
     }
 
-    if (!this._collidingResource && this._colliding) {
-      this._colliding = false;
+    if (!this._collidingResource && this._collidingWithResource) {
+      this._collidingWithResource = false;
       this._player.setCollidingResource(null);
     }
-  }
 
-  public addDroppedItem(droppedItem: DropItem): void {
-    this._droppedItems.push(droppedItem); // split into 3 different arrays (for rock, tree, bush?)
-    console.log('this._droppedItems: ', this._droppedItems);
+    // collisions with dropped items
+    this._collidingDroppedItem = this._droppedItems.find((droppedItem) =>
+      Phaser.Geom.Intersects.CircleToCircle(this._player.circle, droppedItem.circle),
+    );
+
+    if (this._collidingDroppedItem && !this._collidingWithDroppedItem) {
+      this._collidingWithDroppedItem = true;
+      // this._player.setCollidingResource(this._collidingResource);
+      console.log('statred colliding with dropped item');
+      this._collidingDroppedItem.pickup();
+      this.removeDroppedItem(this._collidingDroppedItem);
+    }
+
+    // TODO: might not even need this
+    if (!this._collidingDroppedItem && this._collidingWithDroppedItem) {
+      this._collidingWithDroppedItem = false;
+      // this._player.setCollidingResource(null);
+      console.log('ended colliding with dropped item');
+    }
   }
 
   public removeResource(resource: Resource): void {
@@ -80,8 +100,27 @@ export default class MainScene extends Phaser.Scene {
         // then destroy
         resource.destroy();
         // and reset collisions
-        this._colliding = false;
+        this._collidingWithResource = false;
         this._player.setCollidingResource(null);
+      }
+    }
+  }
+
+  public addDroppedItem(droppedItem: DropItem): void {
+    this._droppedItems.push(droppedItem); // split into 3 different arrays (for rock, tree, bush?)
+    console.log('this._droppedItems: ', this._droppedItems);
+  }
+
+  public removeDroppedItem(droppedItem: DropItem): void {
+    if (droppedItem) {
+      // first remove from the array if exists
+      const index = this._droppedItems.indexOf(droppedItem);
+      if (index !== -1) {
+        this._droppedItems.splice(index, 1);
+        // then destroy
+        droppedItem.destroy();
+        // and reset collisions
+        this._collidingWithDroppedItem = false;
       }
     }
   }

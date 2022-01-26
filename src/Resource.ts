@@ -1,7 +1,7 @@
 import DropItem from './DropItem';
 import MainScene from './MainScene';
 
-const CIRCLE_RADIUS = 12;
+const CIRCLE_RADIUS = 16;
 
 export default class Resource extends Phaser.Physics.Matter.Sprite {
   private _health: number;

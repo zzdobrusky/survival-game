@@ -14,7 +14,7 @@ type KeyboardKeys = {
   pointer: Phaser.Input.Pointer;
 };
 
-const CIRCLE_RADIUS = 15;
+const CIRCLE_RADIUS = 10;
 
 export default class Player extends Phaser.Physics.Matter.Sprite {
   private readonly _KEYS: KeyboardKeys;

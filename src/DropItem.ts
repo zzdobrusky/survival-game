@@ -4,6 +4,7 @@ const CIRCLE_RADIUS = 10;
 
 export default class DropItem extends Phaser.Physics.Matter.Sprite {
   private _sound: Phaser.Sound.BaseSound;
+  private _circle: Phaser.Geom.Circle;
 
   constructor({
     scene,
@@ -23,18 +24,27 @@ export default class DropItem extends Phaser.Physics.Matter.Sprite {
     super(scene.matter.world, x, y, texture, frame);
     scene.add.existing(this);
     this.setCircle(CIRCLE_RADIUS);
+    this.setFrictionAir(0.6);
     this.setScale(0.5);
-    this.setFrictionAir(1);
     this._sound = scene.sound.add('pickup');
     this.type = type;
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
+  }
+
+  public update(): void {
+    // TODO: might be a better way -> since player is moving it needs to update its circle
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
   }
 
   public static preload(scene: Phaser.Scene): void {
     scene.load.audio('pickup', 'assets/audio/pickup.wav');
   }
 
+  get circle(): Phaser.Geom.Circle {
+    return this._circle;
+  }
+
   public pickup(): boolean {
-    this.destroy();
     this._sound.play();
     return true;
   }
