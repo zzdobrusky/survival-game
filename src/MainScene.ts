@@ -53,7 +53,6 @@ export default class MainScene extends Phaser.Scene {
 
   public update(): void {
     this._player.update();
-    this._droppedItems.forEach((dropItem) => dropItem.update());
 
     // collisions with resources
     this._collidingResource = this._resources.find((resource) =>

@@ -31,16 +31,12 @@ export default class DropItem extends Phaser.Physics.Matter.Sprite {
     this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
   }
 
-  public update(): void {
-    // TODO: might be a better way -> since player is moving it needs to update its circle
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
-  }
-
   public static preload(scene: Phaser.Scene): void {
     scene.load.audio('pickup', 'assets/audio/pickup.wav');
   }
 
   get circle(): Phaser.Geom.Circle {
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
     return this._circle;
   }
 

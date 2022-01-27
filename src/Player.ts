@@ -135,9 +135,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       this._weaponRotation = 0;
     }
     this._spriteWeapon.setAngle(this._weaponRotation);
-
-    // TODO: might be a better way -> since player is moving it needs to update its circle
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
   }
 
   private whackStuff(): void {
@@ -150,6 +147,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   get circle(): Phaser.Geom.Circle {
+    this._circle = this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
     return this._circle;
   }
 }

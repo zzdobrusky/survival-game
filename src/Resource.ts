@@ -1,5 +1,5 @@
-import DropItem from './DropItem';
 import MainScene from './MainScene';
+import DropItem from './DropItem';
 
 const CIRCLE_RADIUS = 16;
 
