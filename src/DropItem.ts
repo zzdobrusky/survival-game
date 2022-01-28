@@ -1,6 +1,6 @@
 import MainScene from './MainScene';
 
-const CIRCLE_RADIUS = 10;
+const CIRCLE_RADIUS = 7;
 
 export default class DropItem extends Phaser.Physics.Matter.Sprite {
   private _sound: Phaser.Sound.BaseSound;

@@ -15,6 +15,7 @@ type KeyboardKeys = {
 };
 
 const CIRCLE_RADIUS = 10;
+const SENSOR_DISTANCE = 6;
 
 export default class Player extends Phaser.Physics.Matter.Sprite {
   private readonly _KEYS: KeyboardKeys;
@@ -66,7 +67,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this._weaponRotationDirection = 1;
     scene.add.existing(this._spriteWeapon);
 
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS + SENSOR_DISTANCE);
   }
 
   public setCollidingResource(resource: Resource): void {
@@ -147,7 +148,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   get circle(): Phaser.Geom.Circle {
-    this._circle = this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
+    this._circle = this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS + SENSOR_DISTANCE);
     return this._circle;
   }
 }
