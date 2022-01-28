@@ -38,17 +38,8 @@ export default class MainScene extends Phaser.Scene {
     this.matter.world.convertTilemapLayer(layer1);
 
     // add resources
-    this._resources = this._map
-      .getObjectLayer('Resources')
-      .objects.map((resource) => new Resource({ scene: this, resource }));
-
-    this._player = new Player({
-      scene: this,
-      x: 430,
-      y: 330,
-      texture: 'female',
-      frame: 'townsfolk_f_idle_1',
-    });
+    this._resources = this._map.getObjectLayer('Resources').objects.map((resource) => new Resource(this, resource));
+    this._player = new Player(this, 430, 330, 'female', 'townsfolk_f_idle_1');
   }
 
   public update(): void {

@@ -11,30 +11,21 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   private _depth: number;
   private _type: string;
   private _CIRCLE_RADIUS: number;
+  private _SENSING_DISTANCE: number;
 
-  constructor({
-    scene,
-    x,
-    y,
-    texture,
-    frame,
-    type,
-    health,
-    depth,
-    drops,
-    CIRCLE_RADIUS,
-  }: {
-    scene: MainScene;
-    x: number;
-    y: number;
-    texture: string | Phaser.Textures.Texture;
-    frame: string | number;
-    type: string;
-    health: number;
-    depth: number;
-    drops: number[];
-    CIRCLE_RADIUS: number;
-  }) {
+  constructor(
+    scene: MainScene,
+    x: number,
+    y: number,
+    texture: string | Phaser.Textures.Texture,
+    frame: string | number,
+    type: string,
+    health: number,
+    depth: number,
+    drops: number[],
+    CIRCLE_RADIUS: number,
+    SENSING_DISTANCE: number,
+  ) {
     super(scene.matter.world, x, y, texture, frame);
     this._mainScene = scene;
     this.x += this.width / 2;
@@ -43,9 +34,13 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     this._type = type;
     this._health = health;
     this._drops = drops;
-    this._position = new Phaser.Math.Vector2(this.x, this.y);
+    this._depth = depth;
     this._CIRCLE_RADIUS = CIRCLE_RADIUS;
+    this._SENSING_DISTANCE = SENSING_DISTANCE;
+
+    this._position = new Phaser.Math.Vector2(this.x, this.y);
     if (this._type) this._sound = this.scene.sound.add(this._type);
+    this.setCircle(this._CIRCLE_RADIUS);
 
     this.scene.add.existing(this);
   }
@@ -60,7 +55,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   }
 
   get circle(): Phaser.Geom.Circle {
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, this._CIRCLE_RADIUS);
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, this._CIRCLE_RADIUS + this._SENSING_DISTANCE);
     return this._circle;
   }
 
@@ -77,14 +72,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     this._sound.play();
     if (this.dead) {
       this._drops.forEach((drop) => {
-        const newDropItem = new DropItem({
-          scene: this._mainScene,
-          x: this.x,
-          y: this.y,
-          texture: 'items',
-          frame: drop,
-          type: this.type,
-        });
+        const newDropItem = new DropItem(this._mainScene, this.x, this.y, 'items', drop, this.type);
         this._mainScene.addDroppedItem(newDropItem);
       });
     }
