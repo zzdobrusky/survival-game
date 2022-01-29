@@ -1,5 +1,5 @@
-import MainScene from './MainScene';
-import DropItem from './DropItem';
+import MainScene from '../Scenes/MainScene';
+import DropItem from '../Sprites/DropItem';
 
 export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   private _position: Phaser.Math.Vector2;

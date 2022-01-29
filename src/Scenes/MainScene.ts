@@ -1,6 +1,6 @@
-import DropItem from './DropItem';
-import Player from './Player';
-import Resource from './Resource';
+import DropItem from '../Sprites/DropItem';
+import Player from '../Sprites/Player';
+import Resource from '../Sprites/Resource';
 
 export default class MainScene extends Phaser.Scene {
   private _player: Player;

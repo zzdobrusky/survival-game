@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import MainScene from './MainScene';
+import MainScene from './Scenes/MainScene';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   width: 512,

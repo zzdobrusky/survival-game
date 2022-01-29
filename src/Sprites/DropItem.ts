@@ -1,9 +1,13 @@
-import MainScene from './MainScene';
-import MatterEntity from './MatterEntity';
+import MainScene from '../Scenes/MainScene';
+import MatterEntity from '../Types/MatterEntity';
 
 const CIRCLE_RADIUS = 9;
 
 export default class DropItem extends MatterEntity {
+  public static preload(scene: Phaser.Scene): void {
+    scene.load.audio('pickup', 'assets/audio/pickup.wav');
+  }
+
   constructor(
     scene: MainScene,
     x: number,
@@ -16,10 +20,6 @@ export default class DropItem extends MatterEntity {
     this.x -= this.width / 2;
     this.y -= this.height / 2;
     this.setScale(0.5);
-  }
-
-  public static preload(scene: Phaser.Scene): void {
-    scene.load.audio('pickup', 'assets/audio/pickup.wav');
   }
 
   public pickup(): boolean {

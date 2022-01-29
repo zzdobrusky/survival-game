@@ -1,6 +1,6 @@
-import MainScene from './MainScene';
+import MainScene from '../Scenes/MainScene';
 import Resource from './Resource';
-import MatterEntity from './MatterEntity';
+import MatterEntity from '../Types/MatterEntity';
 
 type KeyboardKeys = {
   upW: Phaser.Input.Keyboard.Key;
@@ -25,6 +25,13 @@ export default class Player extends MatterEntity {
   private _weaponRotation: number;
   private _weaponRotationDirection: number;
   private _collidingResource: Resource;
+
+  public static preload(scene: Phaser.Scene): void {
+    scene.load.atlas('female', 'assets/animations/female.png', 'assets/animations/female_atlas.json');
+    scene.load.animation('female_anim', 'assets/animations/female_anim.json');
+    scene.load.spritesheet('items', 'assets/images/items.png', { frameWidth: 32, frameHeight: 32 });
+    scene.load.audio('player', 'assets/audio/player.wav');
+  }
 
   constructor(
     scene: MainScene,
@@ -60,13 +67,6 @@ export default class Player extends MatterEntity {
 
   public setCollidingResource(resource: Resource): void {
     this._collidingResource = resource;
-  }
-
-  public static preload(scene: Phaser.Scene): void {
-    scene.load.atlas('female', 'assets/animations/female.png', 'assets/animations/female_atlas.json');
-    scene.load.animation('female_anim', 'assets/animations/female_anim.json');
-    scene.load.spritesheet('items', 'assets/images/items.png', { frameWidth: 32, frameHeight: 32 });
-    scene.load.audio('player', 'assets/audio/player.wav');
   }
 
   public update(): void {
