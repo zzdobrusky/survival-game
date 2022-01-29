@@ -23,6 +23,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     health: number,
     depth: number,
     drops: number[],
+    friction: number,
     CIRCLE_RADIUS: number,
     SENSING_DISTANCE: number,
   ) {
@@ -35,14 +36,24 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     this._health = health;
     this._drops = drops;
     this._depth = depth;
+    console.log('type: ', type);
+    if (type) this._sound = scene.sound.add(type);
     this._CIRCLE_RADIUS = CIRCLE_RADIUS;
     this._SENSING_DISTANCE = SENSING_DISTANCE;
-
     this._position = new Phaser.Math.Vector2(this.x, this.y);
-    if (this._type) this._sound = this.scene.sound.add(this._type);
     this.setCircle(this._CIRCLE_RADIUS);
+    if (friction && friction < 1) this.setFriction(friction);
+    else this.setStatic(true);
 
     this.scene.add.existing(this);
+  }
+
+  get sound(): Phaser.Sound.BaseSound {
+    return this._sound;
+  }
+
+  get mainScene(): MainScene {
+    return this._mainScene;
   }
 
   get position(): Phaser.Math.Vector2 {
@@ -72,8 +83,8 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     this._sound.play();
     if (this.dead) {
       this._drops.forEach((drop) => {
-        const newDropItem = new DropItem(this._mainScene, this.x, this.y, 'items', drop, this.type);
-        this._mainScene.addDroppedItem(newDropItem);
+        const newDropItem = new DropItem(this.mainScene, this.x, this.y, 'items', drop, 'pickup');
+        this.mainScene.addDroppedItem(newDropItem);
       });
     }
   }

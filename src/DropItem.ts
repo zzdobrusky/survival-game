@@ -1,11 +1,9 @@
 import MainScene from './MainScene';
+import MatterEntity from './MatterEntity';
 
 const CIRCLE_RADIUS = 9;
 
-export default class DropItem extends Phaser.Physics.Matter.Sprite {
-  private _sound: Phaser.Sound.BaseSound;
-  private _circle: Phaser.Geom.Circle;
-
+export default class DropItem extends MatterEntity {
   constructor(
     scene: MainScene,
     x: number,
@@ -14,27 +12,18 @@ export default class DropItem extends Phaser.Physics.Matter.Sprite {
     frame: string | number,
     type: string,
   ) {
-    super(scene.matter.world, x, y, texture, frame);
-    scene.add.existing(this);
-    this.setCircle(CIRCLE_RADIUS);
-    this.setFrictionAir(0.6);
+    super(scene, x, y, texture, frame, type, 0, 0, [], 0.6, CIRCLE_RADIUS, 0);
+    this.x -= this.width / 2;
+    this.y -= this.height / 2;
     this.setScale(0.5);
-    this._sound = scene.sound.add('pickup');
-    this.type = type;
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
   }
 
   public static preload(scene: Phaser.Scene): void {
     scene.load.audio('pickup', 'assets/audio/pickup.wav');
   }
 
-  get circle(): Phaser.Geom.Circle {
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS);
-    return this._circle;
-  }
-
   public pickup(): boolean {
-    this._sound.play();
+    this.sound.play();
     return true;
   }
 }

@@ -1,5 +1,4 @@
 import MainScene from './MainScene';
-import DropItem from './DropItem';
 import MatterEntity from './MatterEntity';
 
 const CIRCLE_RADIUS = 18;
@@ -7,14 +6,11 @@ const CIRCLE_RADIUS = 18;
 export default class Resource extends MatterEntity {
   constructor(scene: MainScene, resource: any) {
     const drops = JSON.parse(resource.properties.find((p) => p.name === 'drops').value);
-    super(scene, resource.x, resource.y, 'resources', resource.type, resource.type, 5, 0, drops, CIRCLE_RADIUS, 0);
+    super(scene, resource.x, resource.y, 'resources', resource.type, resource.type, 5, 0, drops, 1, CIRCLE_RADIUS, 0);
 
     const yOrigin = resource.properties.find((p) => p.name === 'yOrigin').value;
     this.y += this.height * (yOrigin - 1.5);
-
-    this.setStatic(true);
     this.setOrigin(0.5, yOrigin);
-    this.type = resource.type;
   }
 
   public static preload(scene: Phaser.Scene): void {

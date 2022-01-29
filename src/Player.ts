@@ -1,5 +1,6 @@
 import MainScene from './MainScene';
 import Resource from './Resource';
+import MatterEntity from './MatterEntity';
 
 type KeyboardKeys = {
   upW: Phaser.Input.Keyboard.Key;
@@ -17,14 +18,12 @@ type KeyboardKeys = {
 const CIRCLE_RADIUS = 10;
 const SENSING_DISTANCE = 4;
 
-export default class Player extends Phaser.Physics.Matter.Sprite {
+export default class Player extends MatterEntity {
   private readonly _KEYS: KeyboardKeys;
   private _spriteWeapon: Phaser.GameObjects.Sprite;
   private _weaponRotation: number;
   private _weaponRotationDirection: number;
   private _collidingResource: Resource;
-  private _mainScene: MainScene;
-  private _circle: Phaser.Geom.Circle;
 
   constructor(
     scene: MainScene,
@@ -33,35 +32,28 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     texture: string | Phaser.Textures.Texture,
     frame: string | number,
   ) {
-    super(scene.matter.world, x, y, texture, frame);
-    this._mainScene = scene;
-    this._mainScene.add.existing(this);
+    super(scene, x, y, texture, frame, '', 0, 0, [], 0.35, CIRCLE_RADIUS, SENSING_DISTANCE);
 
     // added WSAD keys
     this._KEYS = {
-      upW: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-      downS: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-      leftA: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-      rightD: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-      rightArrow: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-      upArrow: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-      downArrow: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
-      leftArrow: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
-      EKey: this._mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-      pointer: this._mainScene.input.activePointer,
+      upW: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+      downS: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+      leftA: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+      rightD: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+      rightArrow: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
+      upArrow: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
+      downArrow: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
+      leftArrow: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
+      EKey: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+      pointer: scene.input.activePointer,
     };
 
-    this.setCircle(CIRCLE_RADIUS);
-    this.setFrictionAir(0.35);
-
     // Weapen
-    this._spriteWeapon = new Phaser.GameObjects.Sprite(this._mainScene, 0, 0, 'items', 162);
+    this._spriteWeapon = new Phaser.GameObjects.Sprite(scene, 0, 0, 'items', 162);
     this._spriteWeapon.setScale(0.8);
     this._spriteWeapon.setOrigin(0.25, 0.75);
     this._weaponRotationDirection = 1;
     scene.add.existing(this._spriteWeapon);
-
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS + SENSING_DISTANCE);
   }
 
   public setCollidingResource(resource: Resource): void {
@@ -72,10 +64,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     scene.load.atlas('female', 'assets/animations/female.png', 'assets/animations/female_atlas.json');
     scene.load.animation('female_anim', 'assets/animations/female_anim.json');
     scene.load.spritesheet('items', 'assets/images/items.png', { frameWidth: 32, frameHeight: 32 });
-  }
-
-  get velocity(): MatterJS.Vector {
-    return this.body.velocity;
   }
 
   public update(): void {
@@ -136,13 +124,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     if (this._collidingResource) {
       this._collidingResource.hit();
       if (this._collidingResource.dead) {
-        this._mainScene.removeResource(this._collidingResource);
+        this.mainScene.removeResource(this._collidingResource);
       }
     }
-  }
-
-  get circle(): Phaser.Geom.Circle {
-    this._circle = this._circle = new Phaser.Geom.Circle(this.x, this.y, CIRCLE_RADIUS + SENSING_DISTANCE);
-    return this._circle;
   }
 }
