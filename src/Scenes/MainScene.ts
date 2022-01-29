@@ -1,4 +1,5 @@
 import DropItem from '../Sprites/DropItem';
+import Enemy from '../Sprites/Enemy';
 import Player from '../Sprites/Player';
 import Resource from '../Sprites/Resource';
 
@@ -6,6 +7,7 @@ export default class MainScene extends Phaser.Scene {
   private _player: Player;
   private _map: Phaser.Tilemaps.Tilemap;
   private _resources: Resource[];
+  private _enemies: Enemy[];
   private _collidingResource: Resource;
   private _collidingWithResource: boolean;
   private _droppedItems: DropItem[];
@@ -22,9 +24,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   public preload(): void {
+    // load sprite resourcers
     Player.preload(this);
     Resource.preload(this);
     DropItem.preload(this);
+    Enemy.preload(this);
+    // load tiled background
     this.load.image('tiles', 'assets/images/RPG Nature Tileset.png');
     this.load.tilemapTiledJSON('map', 'assets/images/map.json');
   }
@@ -36,9 +41,9 @@ export default class MainScene extends Phaser.Scene {
     this._map.createLayer('Tile Layer 2', tileset, 0, 0);
     layer1.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(layer1);
-
-    // add resources
+    // populate the tiled map
     this._resources = this._map.getObjectLayer('Resources').objects.map((resource) => new Resource(this, resource));
+    this._enemies = this._map.getObjectLayer('Enemies').objects.map((enemy) => new Enemy(this, enemy));
     this._player = new Player(this, 430, 330, 'female', 'townsfolk_f_idle_1');
   }
 
