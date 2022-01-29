@@ -12,17 +12,10 @@ const CIRCLE_RADIUS = 18;
 
 export default class Resource extends MatterEntity {
   constructor(scene: MainScene, resource: TiledResource) {
-    const foundDepth = resource.properties.find((p) => p.name === 'drops');
-    let depth = 0;
-    if (foundDepth && typeof foundDepth.value === 'number') {
-      depth = foundDepth.value;
-    }
-
+    const foundDepth = resource.properties.find((p) => p.name === 'depth');
+    const depth = foundDepth && typeof foundDepth.value === 'number' ? foundDepth.value : 0;
     const foundDrops = resource.properties.find((p) => p.name === 'drops');
-    let drops = [];
-    if (foundDrops && typeof foundDrops.value === 'string') {
-      drops = JSON.parse(foundDrops.value);
-    }
+    const drops = foundDrops && typeof foundDrops.value === 'string' ? JSON.parse(foundDrops.value) : [];
 
     super(
       scene,
