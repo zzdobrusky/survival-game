@@ -40,8 +40,6 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     this._SENSING_DISTANCE = SENSING_DISTANCE;
     this._position = new Phaser.Math.Vector2(this.x, this.y);
     this.setCircle(this._CIRCLE_RADIUS);
-    console.log('depth: ', depth);
-    console.log('type: ', type);
     if (depth && typeof depth === 'number') this.setDepth(depth);
     if (friction && friction < 1) this.setFriction(friction);
     else this.setStatic(true);

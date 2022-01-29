@@ -21,6 +21,7 @@ const SENSING_DISTANCE = 4;
 export default class Player extends MatterEntity {
   private readonly _KEYS: KeyboardKeys;
   private _spriteWeapon: Phaser.GameObjects.Sprite;
+  private _playerDirection: number;
   private _weaponRotation: number;
   private _weaponRotationDirection: number;
   private _collidingResource: Resource;
@@ -53,6 +54,7 @@ export default class Player extends MatterEntity {
     this._spriteWeapon.setScale(0.8);
     this._spriteWeapon.setOrigin(0.25, 0.75);
     this._weaponRotationDirection = 1;
+    this._playerDirection = 1;
     scene.add.existing(this._spriteWeapon);
   }
 
@@ -64,6 +66,7 @@ export default class Player extends MatterEntity {
     scene.load.atlas('female', 'assets/animations/female.png', 'assets/animations/female_atlas.json');
     scene.load.animation('female_anim', 'assets/animations/female_anim.json');
     scene.load.spritesheet('items', 'assets/images/items.png', { frameWidth: 32, frameHeight: 32 });
+    scene.load.audio('player', 'assets/audio/player.wav');
   }
 
   public update(): void {
@@ -92,14 +95,15 @@ export default class Player extends MatterEntity {
     if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
       this.anims.play('female_walk', true);
       // flip player direction when flipping walking direction
-      const playerDirection = this.scaleX / Math.abs(this.scaleX);
+      this._playerDirection = this.scaleX / Math.abs(this.scaleX);
       if (
-        (Math.sign(this.velocity.x) === -1 && playerDirection === 1) ||
-        (Math.sign(this.velocity.x) === 1 && playerDirection === -1)
+        (Math.sign(this.velocity.x) === -1 && this._playerDirection === 1) ||
+        (Math.sign(this.velocity.x) === 1 && this._playerDirection === -1)
       ) {
-        this.scaleX *= -1;
-        this._spriteWeapon.scaleX *= -1;
+        this._playerDirection *= -1;
+        this.scaleX = this._playerDirection;
         this._weaponRotationDirection *= -1;
+        this._spriteWeapon.scaleX = this._weaponRotationDirection;
       }
     } else {
       this.anims.play('female_idle', true);
@@ -118,6 +122,18 @@ export default class Player extends MatterEntity {
       this._weaponRotation = 0;
     }
     this._spriteWeapon.setAngle(this._weaponRotation);
+
+    this.mainScene.input.on('pointermove', (pointer) => {
+      if (
+        (pointer.worldX < this.x && this._playerDirection === 1) ||
+        (pointer.worldX > this.x && this._playerDirection === -1)
+      ) {
+        this._playerDirection *= -1;
+        this.scaleX = this._playerDirection;
+        this._weaponRotationDirection *= -1;
+        this._spriteWeapon.scaleX = this._weaponRotationDirection;
+      }
+    });
   }
 
   private whackStuff(): void {
