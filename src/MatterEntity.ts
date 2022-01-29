@@ -8,8 +8,6 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   private _circle: Phaser.Geom.Circle;
   private _sound: Phaser.Sound.BaseSound;
   private _drops: number[];
-  private _depth: number;
-  private _type: string;
   private _CIRCLE_RADIUS: number;
   private _SENSING_DISTANCE: number;
 
@@ -31,11 +29,9 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     this._mainScene = scene;
     this.x += this.width / 2;
     this.y += this.height / 2;
-    this._depth = depth || 1;
-    this._type = type;
+    // this._depth = depth || 1;
     this._health = health;
     this._drops = drops;
-    this._depth = depth;
     console.log('type: ', type);
     if (type) this._sound = scene.sound.add(type);
     this._CIRCLE_RADIUS = CIRCLE_RADIUS;
@@ -83,8 +79,8 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     this._sound.play();
     if (this.dead) {
       this._drops.forEach((drop) => {
-        const newDropItem = new DropItem(this.mainScene, this.x, this.y, 'items', drop, 'pickup');
-        this.mainScene.addDroppedItem(newDropItem);
+        const newDropItem = new DropItem(this._mainScene, this.x, this.y, 'items', drop, 'pickup');
+        this._mainScene.addDroppedItem(newDropItem);
       });
     }
   }

@@ -1,16 +1,49 @@
 import MainScene from './MainScene';
 import MatterEntity from './MatterEntity';
 
+type TiledResource = {
+  x?: number;
+  y?: number;
+  type: string;
+  properties?: { name: string; value: number | string }[];
+};
+
 const CIRCLE_RADIUS = 18;
 
 export default class Resource extends MatterEntity {
-  constructor(scene: MainScene, resource: any) {
-    const drops = JSON.parse(resource.properties.find((p) => p.name === 'drops').value);
-    super(scene, resource.x, resource.y, 'resources', resource.type, resource.type, 5, 0, drops, 1, CIRCLE_RADIUS, 0);
+  constructor(scene: MainScene, resource: TiledResource) {
+    const foundDepth = resource.properties.find((p) => p.name === 'drops');
+    let depth = 0;
+    if (foundDepth && typeof foundDepth.value === 'number') {
+      depth = foundDepth.value;
+    }
+
+    const foundDrops = resource.properties.find((p) => p.name === 'drops');
+    let drops = [];
+    if (foundDrops && typeof foundDrops.value === 'string') {
+      drops = JSON.parse(foundDrops.value);
+    }
+
+    super(
+      scene,
+      resource.x,
+      resource.y,
+      'resources',
+      resource.type,
+      resource.type,
+      5,
+      depth,
+      drops,
+      1,
+      CIRCLE_RADIUS,
+      0,
+    );
 
     const yOrigin = resource.properties.find((p) => p.name === 'yOrigin').value;
-    this.y += this.height * (yOrigin - 1.5);
-    this.setOrigin(0.5, yOrigin);
+    if (typeof yOrigin === 'number') {
+      this.y += this.height * (yOrigin - 1.5);
+      this.setOrigin(0.5, yOrigin);
+    }
   }
 
   public static preload(scene: Phaser.Scene): void {
