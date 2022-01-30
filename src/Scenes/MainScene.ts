@@ -13,6 +13,8 @@ export default class MainScene extends Phaser.Scene {
   private _droppedItems: DropItem[];
   private _collidingDroppedItem: DropItem;
   private _collidingWithDroppedItem: boolean;
+  private _collidingEnemy: Enemy;
+  private _collidingWithEnemy: boolean;
 
   constructor() {
     super('MainScene');
@@ -21,10 +23,12 @@ export default class MainScene extends Phaser.Scene {
     this._droppedItems = [];
     this._collidingDroppedItem = null;
     this._collidingWithDroppedItem = false;
+    this._collidingEnemy = null;
+    this._collidingWithEnemy = false;
   }
 
   public preload(): void {
-    // load sprite resourcers
+    // load sprites
     Player.preload(this);
     Resource.preload(this);
     DropItem.preload(this);
@@ -35,6 +39,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   public create(): void {
+    // create tiled background
     this._map = this.make.tilemap({ key: 'map' });
     const tileset = this._map.addTilesetImage('RPG Nature Tileset', 'tiles', 32, 32, 0, 0);
     const layer1 = this._map.createLayer('Tile Layer 1', tileset, 0, 0);
@@ -72,17 +77,27 @@ export default class MainScene extends Phaser.Scene {
 
     if (this._collidingDroppedItem && !this._collidingWithDroppedItem) {
       this._collidingWithDroppedItem = true;
-      // this._player.setCollidingResource(this._collidingResource);
-      console.log('statred colliding with dropped item');
       this._collidingDroppedItem.pickup();
       this.removeDroppedItem(this._collidingDroppedItem);
     }
 
-    // TODO: might not even need this
     if (!this._collidingDroppedItem && this._collidingWithDroppedItem) {
       this._collidingWithDroppedItem = false;
-      // this._player.setCollidingResource(null);
-      console.log('ended colliding with dropped item');
+    }
+
+    // collisions with enemiesas
+    this._collidingEnemy = this._enemies.find((enemy) =>
+      Phaser.Geom.Intersects.CircleToCircle(this._player.circle, enemy.circle),
+    );
+
+    if (this._collidingEnemy && !this._collidingWithEnemy) {
+      this._collidingWithEnemy = true;
+      this._collidingEnemy.hit();
+      // this.removeDroppedItem(this._collidingEnemy);aa
+    }
+
+    if (!this._collidingEnemy && this._collidingWithEnemy) {
+      this._collidingWithEnemy = false;
     }
   }
 

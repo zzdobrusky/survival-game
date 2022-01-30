@@ -1,6 +1,6 @@
 import MainScene from '../Scenes/MainScene';
 import MatterEntity from '../Types/MatterEntity';
-import { TiledResource } from '../Types/TiledResource';
+import { TileResource } from '../Types/TileResource';
 import { extractPropertyFromTile } from '../Tools/helpers';
 
 const CIRCLE_RADIUS = 18;
@@ -13,17 +13,17 @@ export default class Resource extends MatterEntity {
     scene.load.audio('bush', 'assets/audio/bush.wav');
   }
 
-  constructor(scene: MainScene, resource: TiledResource) {
-    const depth = extractPropertyFromTile<number>(resource, 'depth', 'number', 0);
-    const drops = extractPropertyFromTile<[]>(resource, 'drops', 'string', []);
+  constructor(scene: MainScene, tileResource: TileResource) {
+    const depth = extractPropertyFromTile<number>(tileResource, 'depth', 'number', 0);
+    const drops = extractPropertyFromTile<[]>(tileResource, 'drops', 'string', []);
 
     super(
       scene,
-      resource.x,
-      resource.y,
+      tileResource.x,
+      tileResource.y,
       'resources',
-      resource.type,
-      resource.type,
+      tileResource.type,
+      tileResource.type,
       5,
       depth,
       drops,
@@ -32,7 +32,7 @@ export default class Resource extends MatterEntity {
       0,
     );
 
-    const yOrigin = resource.properties.find((p) => p.name === 'yOrigin').value;
+    const yOrigin = tileResource.properties.find((p) => p.name === 'yOrigin').value;
     if (typeof yOrigin === 'number') {
       this.y += this.height * (yOrigin - 1.5);
       this.setOrigin(0.5, yOrigin);
