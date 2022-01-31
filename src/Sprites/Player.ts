@@ -16,7 +16,7 @@ type KeyboardKeys = {
 };
 
 const CIRCLE_RADIUS = 10;
-const SENSING_DISTANCE = 4;
+const SENSING_CIRCLE_RADIUS = 0;
 
 export default class Player extends MatterEntity {
   private readonly _KEYS: KeyboardKeys;
@@ -40,7 +40,7 @@ export default class Player extends MatterEntity {
     texture: string | Phaser.Textures.Texture,
     frame: string | number,
   ) {
-    super(scene, x, y, texture, frame, '', 0, 0, [], 0.35, CIRCLE_RADIUS, SENSING_DISTANCE);
+    super(scene, x, y, texture, frame, '', 0, 0, [], 0.35, CIRCLE_RADIUS, SENSING_CIRCLE_RADIUS);
 
     // added WSAD keys
     this._KEYS = {

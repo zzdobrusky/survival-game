@@ -9,22 +9,29 @@ export default class MainScene extends Phaser.Scene {
   private _resources: Resource[];
   private _enemies: Enemy[];
   private _collidingResource: Resource;
+  private _sensingResource: Resource;
   private _collidingWithResource: boolean;
+  private _sensingWithResource: boolean;
   private _droppedItems: DropItem[];
   private _collidingDroppedItem: DropItem;
   private _collidingWithDroppedItem: boolean;
   private _collidingEnemy: Enemy;
+  private _sensingEnemy: Enemy;
   private _collidingWithEnemy: boolean;
+  private _sensingWithEnemy: boolean;
 
   constructor() {
     super('MainScene');
     this._collidingResource = null;
     this._collidingWithResource = false;
+    this._sensingWithResource = false;
     this._droppedItems = [];
     this._collidingDroppedItem = null;
     this._collidingWithDroppedItem = false;
     this._collidingEnemy = null;
+    this._sensingEnemy = null;
     this._collidingWithEnemy = false;
+    this._sensingWithEnemy = false;
   }
 
   public preload(): void {
@@ -70,6 +77,21 @@ export default class MainScene extends Phaser.Scene {
       this._player.setCollidingResource(null);
     }
 
+    // sensing with resources
+    this._sensingResource = this._resources.find((resource) =>
+      Phaser.Geom.Intersects.CircleToCircle(this._player.sensingCircle, resource.sensingCircle),
+    );
+
+    if (this._sensingResource && !this._sensingWithResource) {
+      this._sensingWithResource = true;
+      this._player.setCollidingResource(this._sensingResource);
+    }
+
+    if (!this._sensingResource && this._sensingWithResource) {
+      this._sensingWithResource = false;
+      this._player.setCollidingResource(null);
+    }
+
     // collisions with dropped items
     this._collidingDroppedItem = this._droppedItems.find((droppedItem) =>
       Phaser.Geom.Intersects.CircleToCircle(this._player.circle, droppedItem.circle),
@@ -85,7 +107,9 @@ export default class MainScene extends Phaser.Scene {
       this._collidingWithDroppedItem = false;
     }
 
-    // collisions with enemiesas
+    // TODO: replace above with sensing with dropped items
+
+    // collisions with enemies
     this._collidingEnemy = this._enemies.find((enemy) =>
       Phaser.Geom.Intersects.CircleToCircle(this._player.circle, enemy.circle),
     );
@@ -93,12 +117,14 @@ export default class MainScene extends Phaser.Scene {
     if (this._collidingEnemy && !this._collidingWithEnemy) {
       this._collidingWithEnemy = true;
       this._collidingEnemy.hit();
-      // this.removeDroppedItem(this._collidingEnemy);aa
+      this._player.setCollidingResource(this._collidingEnemy);
     }
 
     if (!this._collidingEnemy && this._collidingWithEnemy) {
-      this._collidingWithEnemy = false;
+      this._player.setCollidingResource(null);
     }
+
+    // TODO: enemy sensing
   }
 
   public removeResource(resource: Resource): void {
@@ -109,6 +135,21 @@ export default class MainScene extends Phaser.Scene {
         this._resources.splice(index, 1);
         // then destroy
         resource.destroy();
+        // and reset collisions
+        this._collidingWithResource = false;
+        this._player.setCollidingResource(null);
+      }
+    }
+  }
+
+  public removeEnemy(enemy: Enemy): void {
+    if (enemy) {
+      // first remove from the array if exists
+      const index = this._enemies.indexOf(enemy);
+      if (index !== -1) {
+        this._resources.splice(index, 1);
+        // then destroy
+        enemy.destroy();
         // and reset collisions
         this._collidingWithResource = false;
         this._player.setCollidingResource(null);

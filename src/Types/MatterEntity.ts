@@ -8,7 +8,6 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   private _circle: Phaser.Geom.Circle;
   private _sound: Phaser.Sound.BaseSound;
   private _drops: number[];
-  private _depth: number;
   private _CIRCLE_RADIUS: number;
   private _SENSING_DISTANCE: number;
 
@@ -24,20 +23,19 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     drops: number[],
     friction: number,
     CIRCLE_RADIUS: number,
-    SENSING_DISTANCE: number,
+    SENSING_CIRCLE_RADIUS: number,
   ) {
     super(scene.matter.world, x, y, texture, frame);
     this._mainScene = scene;
     this.x += this.width / 2;
     this.y += this.height / 2;
-    this._depth = depth || 1;
     this._health = health;
     this._drops = drops;
 
     if (type) this._sound = scene.sound.add(type);
 
     this._CIRCLE_RADIUS = CIRCLE_RADIUS;
-    this._SENSING_DISTANCE = SENSING_DISTANCE;
+    this._SENSING_DISTANCE = SENSING_CIRCLE_RADIUS;
     this._position = new Phaser.Math.Vector2(this.x, this.y);
     this.setCircle(this._CIRCLE_RADIUS);
     if (depth && typeof depth === 'number') this.setDepth(depth);
@@ -65,7 +63,12 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   }
 
   get circle(): Phaser.Geom.Circle {
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, this._CIRCLE_RADIUS + this._SENSING_DISTANCE);
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, this._CIRCLE_RADIUS);
+    return this._circle;
+  }
+
+  get sensingCircle(): Phaser.Geom.Circle {
+    this._circle = new Phaser.Geom.Circle(this.x, this.y, this._SENSING_DISTANCE);
     return this._circle;
   }
 

@@ -4,6 +4,7 @@ import MainScene from '../Scenes/MainScene';
 import { TileResource } from '../Types/TileResource';
 
 const CIRCLE_RADIUS = 15;
+const SENSING_CIRCLE_RADIUS = 80;
 
 export default class Enemy extends MatterEntity {
   public static preload(scene: Phaser.Scene): void {
@@ -29,7 +30,7 @@ export default class Enemy extends MatterEntity {
       drops,
       0.36,
       CIRCLE_RADIUS,
-      0,
+      SENSING_CIRCLE_RADIUS,
     );
   }
 }
