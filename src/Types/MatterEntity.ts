@@ -2,14 +2,12 @@ import MainScene from '../Scenes/MainScene';
 import DropItem from '../Sprites/DropItem';
 
 export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
-  private _position: Phaser.Math.Vector2;
   private _health: number;
   private _mainScene: MainScene;
-  private _circle: Phaser.Geom.Circle;
   private _sound: Phaser.Sound.BaseSound;
   private _drops: number[];
   private _CIRCLE_RADIUS: number;
-  private _SENSING_DISTANCE: number;
+  private _SENSING_CIRCLE_RADIUS: number;
 
   constructor(
     scene: MainScene,
@@ -35,8 +33,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     if (type) this._sound = scene.sound.add(type);
 
     this._CIRCLE_RADIUS = CIRCLE_RADIUS;
-    this._SENSING_DISTANCE = SENSING_CIRCLE_RADIUS;
-    this._position = new Phaser.Math.Vector2(this.x, this.y);
+    this._SENSING_CIRCLE_RADIUS = SENSING_CIRCLE_RADIUS;
     this.setCircle(this._CIRCLE_RADIUS);
     if (depth && typeof depth === 'number') this.setDepth(depth);
     if (friction && friction < 1) this.setFriction(friction);
@@ -54,8 +51,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   }
 
   get position(): Phaser.Math.Vector2 {
-    this._position.set(this.x, this.y);
-    return this._position;
+    return new Phaser.Math.Vector2(this.x, this.y);
   }
 
   get velocity(): Phaser.Math.Vector2 | MatterJS.Vector {
@@ -63,13 +59,11 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   }
 
   get circle(): Phaser.Geom.Circle {
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, this._CIRCLE_RADIUS);
-    return this._circle;
+    return new Phaser.Geom.Circle(this.x, this.y, this._CIRCLE_RADIUS);
   }
 
   get sensingCircle(): Phaser.Geom.Circle {
-    this._circle = new Phaser.Geom.Circle(this.x, this.y, this._SENSING_DISTANCE);
-    return this._circle;
+    return new Phaser.Geom.Circle(this.x, this.y, this._SENSING_CIRCLE_RADIUS);
   }
 
   get dead(): boolean {

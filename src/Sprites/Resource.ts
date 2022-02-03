@@ -3,8 +3,8 @@ import MatterEntity from '../Types/MatterEntity';
 import { TileResource } from '../Types/TileResource';
 import { extractPropertyFromTile } from '../Tools/helpers';
 
-const CIRCLE_RADIUS = 18;
-const SENSING_CIRCLE_RADIUS = 20;
+const CIRCLE_RADIUS = 15;
+const SENSING_CIRCLE_RADIUS = 19;
 
 export default class Resource extends MatterEntity {
   public static preload(scene: Phaser.Scene): void {

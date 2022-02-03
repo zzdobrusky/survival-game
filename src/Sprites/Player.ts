@@ -25,6 +25,7 @@ export default class Player extends MatterEntity {
   private _weaponRotation: number;
   private _weaponRotationDirection: number;
   private _collidingResource: Resource;
+  private _sensingResource: Resource;
 
   public static preload(scene: Phaser.Scene): void {
     scene.load.atlas('female', 'assets/animations/female.png', 'assets/animations/female_atlas.json');
@@ -67,6 +68,10 @@ export default class Player extends MatterEntity {
 
   public setCollidingResource(resource: Resource): void {
     this._collidingResource = resource;
+  }
+
+  public setSensingResource(resource: Resource): void {
+    this._sensingResource = resource;
   }
 
   public update(): void {
@@ -137,10 +142,10 @@ export default class Player extends MatterEntity {
   }
 
   private whackStuff(): void {
-    if (this._collidingResource) {
-      this._collidingResource.hit();
-      if (this._collidingResource.dead) {
-        this.mainScene.removeResource(this._collidingResource);
+    if (this._sensingResource) {
+      this._sensingResource.hit();
+      if (this._sensingResource.dead) {
+        this.mainScene.removeResource(this._sensingResource, true);
       }
     }
   }
