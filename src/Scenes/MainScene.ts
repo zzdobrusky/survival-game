@@ -68,11 +68,11 @@ export default class MainScene extends Phaser.Scene {
     );
     if (this._collidingResource && !this._startedCollidingWithResource) {
       this._startedCollidingWithResource = true;
-      this._player.setCollidingResource(this._collidingResource);
+      this._player.setCollidingEntity(this._collidingResource);
     }
     if (!this._collidingResource && this._startedCollidingWithResource) {
       this._startedCollidingWithResource = false;
-      this._player.setCollidingResource(null);
+      this._player.setCollidingEntity(null);
     }
 
     // source sensing a player
@@ -81,12 +81,26 @@ export default class MainScene extends Phaser.Scene {
     );
     if (this._sensingResource && !this._startedSensingWithResource) {
       this._startedSensingWithResource = true;
-      this._player.setSensingResource(this._sensingResource);
+      this._player.setSensingEntity(this._sensingResource);
     }
     if (!this._sensingResource && this._startedSensingWithResource) {
       this._startedSensingWithResource = false;
-      this._player.setSensingResource(null);
+      this._player.setSensingEntity(null);
     }
+
+    // enemy sensing a player
+    this._sensingEnemy = this._enemies.find((enemy) =>
+      Phaser.Geom.Intersects.CircleToCircle(this._player.circle, enemy.sensingCircle),
+    );
+    if (this._sensingEnemy && !this._startedSensingWithEnemy) {
+      this._startedSensingWithEnemy = true;
+      this._player.setSensingEntity(this._sensingEnemy);
+    }
+    if (!this._sensingEnemy && this._startedSensingWithEnemy) {
+      this._startedSensingWithEnemy = false;
+      this._player.setSensingEntity(null);
+    }
+    // TODO: enemy colliding with a player
 
     // dropped items colliding with a player
     this._collidingDroppedItem = this._droppedItems.find((droppedItem) =>
@@ -100,11 +114,26 @@ export default class MainScene extends Phaser.Scene {
     if (!this._collidingDroppedItem && this._startedCollidingWithDroppedItem) {
       this._startedCollidingWithDroppedItem = false;
     }
-
-    // TODO: enemy sensing a player
-    // TODO: enemy colliding with a player
   }
 
+  // TODO: interface instead calling different methods and different circles
+  // private manageSensingIntersectWithPlayer(intersectingEntities, startedIntersecting, circleTypeName, settingEntity) {
+  //   const intersectingEntity = intersectingEntities.find((entity) =>
+  //     Phaser.Geom.Intersects.CircleToCircle(this._player.circle, entity[circleTypeName]),
+  //   );
+  //   if (intersectingEntity && !startedIntersecting) {
+  //     startedIntersecting = true;
+  //     this._player.setSensingEntity(intersectingEntity);
+  //   }
+  //   if (!intersectingEntity && startedIntersecting) {
+  //     startedIntersecting = false;
+  //     this._player.setSensingEntity(null);
+  //   }
+
+  //   return
+  // }
+
+  // TODO:use interface instead
   public removeResource(resource: Resource, sensing = false): void {
     if (resource) {
       // first remove from the array if exists
@@ -116,10 +145,10 @@ export default class MainScene extends Phaser.Scene {
         // and reset collisions/sensings
         if (sensing) {
           this._startedSensingWithResource = false;
-          this._player.setSensingResource(null);
+          this._player.setSensingEntity(null);
         } else {
           this._startedCollidingWithResource = false;
-          this._player.setCollidingResource(null);
+          this._player.setCollidingEntity(null);
         }
       }
     }
@@ -135,7 +164,7 @@ export default class MainScene extends Phaser.Scene {
         enemy.destroy();
         // and reset collisions
         this._startedCollidingWithResource = false;
-        this._player.setCollidingResource(null);
+        this._player.setCollidingEntity(null);
       }
     }
   }
