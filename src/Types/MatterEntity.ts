@@ -84,4 +84,13 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
       });
     }
   }
+
+  public startedTracking(): void {
+    this.sound.play();
+  }
+
+  public pickup(): boolean {
+    this.sound.play();
+    return true;
+  }
 }

@@ -66,14 +66,6 @@ export default class Player extends MatterEntity {
     scene.add.existing(this._spriteWeapon);
   }
 
-  public setCollidingEntity(resource: Resource): void {
-    this._collidingResource = resource;
-  }
-
-  public setSensingEntity(resource: Resource): void {
-    this._sensingResource = resource;
-  }
-
   public update(): void {
     const speed = 2.5;
     const playerVelocity = new Phaser.Math.Vector2();
@@ -141,7 +133,17 @@ export default class Player extends MatterEntity {
     });
   }
 
+  public setCollidingEntity(resource: Resource): void {
+    console.log('Player setCollidingEntity: ', resource);
+    this._collidingResource = resource;
+  }
+
+  public setSensingEntity(resource: Resource): void {
+    this._sensingResource = resource;
+  }
+
   private whackStuff(): void {
+    console.log('Player whackStuff: ', this._sensingResource);
     if (this._sensingResource) {
       this._sensingResource.hit();
       if (this._sensingResource.dead) {
