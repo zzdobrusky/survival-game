@@ -14,30 +14,9 @@ export default class MainScene extends Phaser.Scene {
   private _manageSensingWithEnemies: ManageIntersections;
   private _manageCollisionsWithDrops: ManageIntersections;
 
-  // private _collidingResource: Resource;
-  // private _sensingResource: Resource;
-  // private _startedCollidingWithResource: boolean;
-  // private _startedSensingWithResource: boolean;
-
-  // private _collidingDroppedItem: DropItem;
-  // private _startedCollidingWithDroppedItem: boolean;
-  // private _collidingEnemy: Enemy;
-  // private _sensingEnemy: Enemy;
-  // private _startedCollidingWithEnemy: boolean;
-  // private _startedSensingWithEnemy: boolean;
-
   constructor() {
     super('MainScene');
-    // this._collidingResource = null;
-    // this._startedCollidingWithResource = false;
-    // this._startedSensingWithResource = false;
     this._droppedItems = [];
-    // this._collidingDroppedItem = null;
-    // this._startedCollidingWithDroppedItem = false;
-    // this._collidingEnemy = null;
-    // this._sensingEnemy = null;
-    // this._startedCollidingWithEnemy = false;
-    // this._startedSensingWithEnemy = false;
   }
 
   public preload(): void {
@@ -65,34 +44,28 @@ export default class MainScene extends Phaser.Scene {
     this._player = new Player(this, 430, 330, 'female', 'townsfolk_f_idle_1');
     // manage intersections
     this._manageSensingWithResources = new ManageIntersections(this._player, this._resources, true);
-    this._manageSensingWithEnemies = new ManageIntersections(this._player, this._enemies, true, (enemy) =>
-      enemy.startedTracking(),
+    this._manageSensingWithEnemies = new ManageIntersections(
+      this._player,
+      this._enemies,
+      true,
+      (enemy) => (enemy as Enemy).startHunting(this._player),
+      // (enemy) => (enemy as Enemy).stopTracking(), // TODO: this calls method of the null object
     );
     this._manageCollisionsWithDrops = new ManageIntersections(this._player, this._droppedItems, false, (drop) => {
-      drop.pickup();
-      this.removeDroppedItem(drop);
+      (drop as DropItem).pickup();
+      this.removeDroppedItem(drop as DropItem);
     });
   }
 
   public update(): void {
     this._player.update();
+    this._enemies.forEach((enemy) => enemy.update());
     // source sensing a player
     this._manageSensingWithResources.update();
     // enemies sensing a player
     this._manageSensingWithEnemies.update();
     // dropped items colliding with a player
     this._manageCollisionsWithDrops.update();
-    // this._collidingDroppedItem = this._droppedItems.find((droppedItem) =>
-    //   Phaser.Geom.Intersects.CircleToCircle(this._player.circle, droppedItem.circle),
-    // );
-    // if (this._collidingDroppedItem && !this._startedCollidingWithDroppedItem) {
-    //   this._startedCollidingWithDroppedItem = true;
-    //   this._collidingDroppedItem.pickup();
-    //   this.removeDroppedItem(this._collidingDroppedItem);
-    // }
-    // if (!this._collidingDroppedItem && this._startedCollidingWithDroppedItem) {
-    //   this._startedCollidingWithDroppedItem = false;
-    // }
 
     // TODO: enemy colliding with a player
   }

@@ -147,6 +147,7 @@ export default class Player extends MatterEntity {
     if (this._sensingResource) {
       this._sensingResource.hit();
       if (this._sensingResource.dead) {
+        console.log('sensing resource is dead. Removing...');
         this.mainScene.removeSensingResource(this._sensingResource);
       }
     }

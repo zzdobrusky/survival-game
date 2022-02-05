@@ -22,4 +22,9 @@ export default class DropItem extends MatterEntity {
     this.y -= this.height / 2;
     this.setScale(0.5);
   }
+
+  public pickup(): boolean {
+    this.sound.play();
+    return true;
+  }
 }

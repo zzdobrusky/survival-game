@@ -39,19 +39,19 @@ export default class ManageIntersections {
     if (intersectingEntity && !this._startedIntersecting) {
       console.log('entity started intersecting a player');
       this._startedIntersecting = true;
-      console.log('setEntity called: ', intersectingEntity);
+      this._onStartedIntersecting && this._onStartedIntersecting(intersectingEntity);
       this._isSensing
         ? this._player.setSensingEntity(intersectingEntity)
         : this._player.setCollidingEntity(intersectingEntity);
-      this._onStartedIntersecting && this._onStartedIntersecting(intersectingEntity);
+      console.log('setEntity called: ', intersectingEntity);
     }
 
     if (!intersectingEntity && this._startedIntersecting) {
       console.log('entity stopped intersecting a player');
       this._startedIntersecting = false;
-      console.log('setEntity called: ', null);
-      this._isSensing ? this._player.setSensingEntity(null) : this._player.setCollidingEntity(null);
       this._onEndedIntersecting && this._onEndedIntersecting(intersectingEntity);
+      this._isSensing ? this._player.setSensingEntity(null) : this._player.setCollidingEntity(null);
+      console.log('setEntity called: ', null);
     }
   }
 
