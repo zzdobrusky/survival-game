@@ -5,7 +5,7 @@ import { TileResource } from '../Types/TileResource';
 import Player from './Player';
 
 const CIRCLE_RADIUS = 18;
-const SENSING_CIRCLE_RADIUS = 40;
+const SENSING_CIRCLE_RADIUS = 100;
 
 export default class Enemy extends MatterEntity {
   private _prey: Player;

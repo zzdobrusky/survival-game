@@ -49,7 +49,7 @@ export default class MainScene extends Phaser.Scene {
       this._player,
       this._enemies,
       (enemy) => (enemy as Enemy).startHunting(this._player),
-      // (enemy) => (enemy as Enemy).stopTracking(), // TODO: this calls method of the null object
+      (enemy) => (enemy as Enemy).stopHunting(),
     );
     this._manageSensingWithDrops = new ManageSensingIntersections(this._player, this._droppedItems, (drop) => {
       (drop as DropItem).pickup();
