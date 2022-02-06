@@ -2,7 +2,7 @@ import MainScene from '../Scenes/MainScene';
 import MatterEntity from '../Types/MatterEntity';
 
 const CIRCLE_RADIUS = 9;
-const SENSING_CIRCLE_RADIUS = 0;
+const SENSING_CIRCLE_RADIUS = 9;
 
 export default class DropItem extends MatterEntity {
   public static preload(scene: Phaser.Scene): void {

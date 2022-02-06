@@ -58,10 +58,6 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     return this.body.velocity;
   }
 
-  get circle(): Phaser.Geom.Circle {
-    return new Phaser.Geom.Circle(this.x, this.y, this._CIRCLE_RADIUS);
-  }
-
   get sensingCircle(): Phaser.Geom.Circle {
     return new Phaser.Geom.Circle(this.x, this.y, this._SENSING_CIRCLE_RADIUS);
   }

@@ -1,5 +1,4 @@
 import MainScene from '../Scenes/MainScene';
-import Resource from './Resource';
 import MatterEntity from '../Types/MatterEntity';
 
 type KeyboardKeys = {
@@ -16,7 +15,7 @@ type KeyboardKeys = {
 };
 
 const CIRCLE_RADIUS = 10;
-const SENSING_CIRCLE_RADIUS = 0;
+const SENSING_CIRCLE_RADIUS = 10;
 
 export default class Player extends MatterEntity {
   private readonly _KEYS: KeyboardKeys;
@@ -24,8 +23,8 @@ export default class Player extends MatterEntity {
   private _playerDirection: number;
   private _weaponRotation: number;
   private _weaponRotationDirection: number;
-  private _collidingResource: Resource;
-  private _sensingResource: Resource;
+  private _sensingEntity: MatterEntity;
+  private _sensingEntities: MatterEntity[];
 
   public static preload(scene: Phaser.Scene): void {
     scene.load.atlas('female', 'assets/animations/female.png', 'assets/animations/female_atlas.json');
@@ -42,7 +41,8 @@ export default class Player extends MatterEntity {
     frame: string | number,
   ) {
     super(scene, x, y, texture, frame, 'player', 6, 0, [], 0.35, CIRCLE_RADIUS, SENSING_CIRCLE_RADIUS);
-
+    this._sensingEntity = null;
+    this._sensingEntities = [];
     // added WSAD keys
     this._KEYS = {
       upW: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
@@ -133,22 +133,18 @@ export default class Player extends MatterEntity {
     });
   }
 
-  public setCollidingEntity(resource: Resource): void {
-    console.log('Player setCollidingEntity: ', resource);
-    this._collidingResource = resource;
-  }
-
-  public setSensingEntity(resource: Resource): void {
-    this._sensingResource = resource;
+  public setSensingEntity(sensingEntity: MatterEntity, sensingEntities: MatterEntity[]): void {
+    this._sensingEntity = sensingEntity;
+    this._sensingEntities = sensingEntities;
   }
 
   private whackStuff(): void {
-    console.log('Player whackStuff: ', this._sensingResource);
-    if (this._sensingResource) {
-      this._sensingResource.hit();
-      if (this._sensingResource.dead) {
+    console.log('Player whackStuff: ', this._sensingEntity);
+    if (this._sensingEntity) {
+      this._sensingEntity.hit();
+      if (this._sensingEntity.dead) {
         console.log('sensing resource is dead. Removing...');
-        this.mainScene.removeSensingResource(this._sensingResource);
+        this.mainScene.removeSensingEntity(this._sensingEntity, this._sensingEntities);
       }
     }
   }
