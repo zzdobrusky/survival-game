@@ -41,8 +41,6 @@ export default class Enemy extends MatterEntity {
   }
 
   public update(): void {
-    // fix for keeping player rotation constant
-    this.setAngle(0);
     // set up following a prey and attacking if too close
     if (this._prey) {
       const directionToTrackPrey = this._prey.position.subtract(this.position);
@@ -56,7 +54,14 @@ export default class Enemy extends MatterEntity {
       } else if (this._attackTimer === null) {
         this._attackTimer = setInterval(() => this.attack(), 500);
       }
+    } else {
+      this.setVelocity(0, 0);
     }
+
+    // fix for keeping player rotation constant
+    this.setAngle(0);
+    // keep enemy looking in the direction of moving
+    this.setFlipX(this.velocity.x < 0);
   }
 
   public startHunting(player: Player): void {
