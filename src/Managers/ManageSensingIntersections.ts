@@ -8,6 +8,7 @@ interface ICallback {
 // TODO: interface instead calling different methods and different circles
 export default class ManageSensingIntersections {
   private _startedSensingIntersection: boolean;
+  private _isSensing: boolean; // TODO: replacing intersectingEntity?
   private _sensingEntities: MatterEntity[];
   private _player: Player;
   private _onSensingStarted: ICallback;
