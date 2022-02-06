@@ -12,6 +12,7 @@ export default class MainScene extends Phaser.Scene {
   private _droppedItems: DropItem[];
   private _manageSensingWithResources: ManageIntersections;
   private _manageSensingWithEnemies: ManageIntersections;
+  private _manageCollisionsWithEnemies: ManageIntersections;
   private _manageCollisionsWithDrops: ManageIntersections;
 
   constructor() {
@@ -51,6 +52,7 @@ export default class MainScene extends Phaser.Scene {
       (enemy) => (enemy as Enemy).startHunting(this._player),
       // (enemy) => (enemy as Enemy).stopTracking(), // TODO: this calls method of the null object
     );
+    this._manageCollisionsWithEnemies = new ManageIntersections(this._player, this._enemies, false);
     this._manageCollisionsWithDrops = new ManageIntersections(this._player, this._droppedItems, false, (drop) => {
       (drop as DropItem).pickup();
       this.removeDroppedItem(drop as DropItem);
@@ -84,17 +86,18 @@ export default class MainScene extends Phaser.Scene {
   }
 
   public removeEnemy(enemy: Enemy): void {
-    if (enemy) {
-      // first remove from the array if exists
-      const index = this._enemies.indexOf(enemy);
-      if (index !== -1) {
-        this._resources.splice(index, 1);
-        // then destroy
-        enemy.destroy();
-        // and reset collisions
-        this._manageSensingWithEnemies.resetIntersecting();
-      }
-    }
+    // TODO: this should be on collisions only not on sensing
+    // if (enemy) {
+    //   // first remove from the array if exists
+    //   const index = this._enemies.indexOf(enemy);
+    //   if (index !== -1) {
+    //     this._enemies.splice(index, 1);
+    //     // then destroy
+    //     enemy.destroy();
+    //     // and reset collisions
+    //     this._manageSensingWithEnemies.resetIntersecting();
+    //   }
+    // }
   }
 
   public addDroppedItem(droppedItem: DropItem): void {

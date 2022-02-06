@@ -9,6 +9,7 @@ const SENSING_CIRCLE_RADIUS = 40;
 
 export default class Enemy extends MatterEntity {
   private _prey: Player;
+  private _attackTimer: NodeJS.Timer;
 
   public static preload(scene: Phaser.Scene): void {
     scene.load.atlas('enemies', 'assets/animations/enemies.png', 'assets/animations/enemies_atlas.json');
@@ -35,15 +36,26 @@ export default class Enemy extends MatterEntity {
       CIRCLE_RADIUS,
       SENSING_CIRCLE_RADIUS,
     );
+    this._prey = null;
+    this._attackTimer = null;
   }
 
   public update(): void {
     // fix for keeping player rotation constant
     this.setAngle(0);
+    // set up following a prey and attacking if too close
     if (this._prey) {
-      // TODO:
-      const directionToTrackPrey = this._prey.position.subtract(this.position).normalize();
-      this.setVelocity(directionToTrackPrey.x, directionToTrackPrey.y);
+      const directionToTrackPrey = this._prey.position.subtract(this.position);
+      if (directionToTrackPrey.length() > 28) {
+        const velocityToPrey = directionToTrackPrey.normalize();
+        this.setVelocity(velocityToPrey.x, velocityToPrey.y);
+        if (this._attackTimer) {
+          clearInterval(this._attackTimer);
+          this._attackTimer = null;
+        }
+      } else if (this._attackTimer === null) {
+        this._attackTimer = setInterval(() => this.attack(), 500);
+      }
     }
   }
 
@@ -56,5 +68,17 @@ export default class Enemy extends MatterEntity {
   public stopHunting(): void {
     console.log('stopped tracking...');
     this._prey = null;
+  }
+
+  public attack(): void {
+    console.log('attacking a prey');
+    console.log('this._prey.dead: ', this._prey.dead);
+    console.log('this.dead: ', this.dead);
+    if (this._prey.dead || this.dead) {
+      clearInterval(this._attackTimer);
+    } else {
+      console.log('hitting a prey');
+      this._prey.hit();
+    }
   }
 }
