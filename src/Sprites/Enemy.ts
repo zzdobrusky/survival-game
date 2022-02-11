@@ -4,12 +4,12 @@ import MainScene from '../Scenes/MainScene';
 import { TileResource } from '../Types/TileResource';
 import Player from './Player';
 
-const CIRCLE_RADIUS = 18;
-const SENSING_CIRCLE_RADIUS = 100;
+import { ENEMY_SIZES, ENEMY_BITE_FREQUENCY_MS } from './constants';
 
 export default class Enemy extends MatterEntity {
   private _prey: Player;
   private _attackTimer: NodeJS.Timer;
+  private _isAttacking: boolean;
 
   public static preload(scene: Phaser.Scene): void {
     scene.load.atlas('enemies', 'assets/animations/enemies.png', 'assets/animations/enemies_atlas.json');
@@ -33,29 +33,36 @@ export default class Enemy extends MatterEntity {
       0,
       drops,
       0.36,
-      CIRCLE_RADIUS,
-      SENSING_CIRCLE_RADIUS,
+      ENEMY_SIZES.CIRCLE_RADIUS,
+      ENEMY_SIZES.SENSING_CIRCLE_RADIUS,
+      ENEMY_SIZES.ATTACKING_DISTANCE,
     );
     this._prey = null;
     this._attackTimer = null;
+    this._isAttacking = false;
   }
 
   public update(): void {
     // set up following a prey and attacking if too close
     if (this._prey) {
-      const directionToTrackPrey = this._prey.position.subtract(this.position);
-      if (directionToTrackPrey.length() > 28) {
-        const velocityToPrey = directionToTrackPrey.normalize();
-        this.setVelocity(velocityToPrey.x, velocityToPrey.y);
-        if (this._attackTimer) {
-          clearInterval(this._attackTimer);
-          this._attackTimer = null;
-        }
-      } else if (this._attackTimer === null) {
-        this._attackTimer = setInterval(() => this.attack(), 500);
+      if (this._attackTimer === null && this.canAttack(this._prey)) {
+        console.log('Enemy update canAttack');
+        this._isAttacking = true;
+        // stop running
+        this.setVelocity(0, 0);
+        this._attackTimer = setInterval(() => this.attack(), ENEMY_BITE_FREQUENCY_MS);
+      } else if (this._attackTimer !== null && !this.canAttack(this._prey)) {
+        console.log('Enemy update cannot Attack');
+        this._isAttacking = false;
+        clearInterval(this._attackTimer);
+        this._attackTimer = null;
       }
-    } else {
-      this.setVelocity(0, 0);
+
+      if (!this._isAttacking) {
+        // start running
+        const velocityToPrey = this.attackingVector(this._prey).normalize();
+        this.setVelocity(velocityToPrey.x, velocityToPrey.y);
+      }
     }
 
     // fix for keeping player rotation constant
@@ -64,26 +71,33 @@ export default class Enemy extends MatterEntity {
     this.setFlipX(this.velocity.x < 0);
   }
 
-  public startHunting(player: Player): void {
-    console.log('started tracking...');
+  public startHunting(prey: Player): void {
+    console.log('Enemy starHunting() prey: ', prey);
     this.sound.play();
-    this._prey = player;
+    this._prey = prey;
   }
 
   public stopHunting(): void {
-    console.log('stopped tracking...');
+    console.log('Enemy starHunting() prey: ', null);
     this._prey = null;
+    // stop running
+    this.setVelocity(0, 0);
   }
 
   public attack(): void {
-    console.log('attacking a prey');
-    console.log('this._prey.dead: ', this._prey.dead);
-    console.log('this.dead: ', this.dead);
-    if (this._prey.dead || this.dead) {
-      clearInterval(this._attackTimer);
-    } else {
-      console.log('hitting a prey');
-      this._prey.hit();
+    // TODO: use attacking distance
+    console.log('Enemy attack() this._prey: ', this._prey);
+    if (this._prey && this.canAttack(this._prey)) {
+      console.log('attacking a prey');
+      console.log('this._prey.dead: ', this._prey.dead);
+      console.log('this.dead: ', this.dead);
+      if (this._prey.dead || this.dead) {
+        clearInterval(this._attackTimer);
+        this._attackTimer = null;
+      } else {
+        console.log('hitting a prey');
+        this._prey.hit();
+      }
     }
   }
 }

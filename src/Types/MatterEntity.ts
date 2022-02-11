@@ -8,6 +8,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   private _drops: number[];
   private _CIRCLE_RADIUS: number;
   private _SENSING_CIRCLE_RADIUS: number;
+  private _ATTACKING_DISTANCE: number;
 
   constructor(
     scene: MainScene,
@@ -20,8 +21,9 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     depth: number,
     drops: number[],
     friction: number,
-    CIRCLE_RADIUS: number,
+    COLLISION_CIRCLE_RADIUS: number,
     SENSING_CIRCLE_RADIUS: number,
+    ATTACKING_DISTANCE: number,
   ) {
     super(scene.matter.world, x, y, texture, frame);
     this._mainScene = scene;
@@ -32,14 +34,24 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
 
     if (type) this._sound = scene.sound.add(type);
 
-    this._CIRCLE_RADIUS = CIRCLE_RADIUS;
+    this._CIRCLE_RADIUS = COLLISION_CIRCLE_RADIUS;
     this._SENSING_CIRCLE_RADIUS = SENSING_CIRCLE_RADIUS;
+    this._ATTACKING_DISTANCE = ATTACKING_DISTANCE;
     this.setCircle(this._CIRCLE_RADIUS);
     if (depth && typeof depth === 'number') this.setDepth(depth);
     if (friction && friction < 1) this.setFriction(friction);
     else this.setStatic(true);
 
     this.scene.add.existing(this);
+  }
+
+  public attackingVector(otherEntity: MatterEntity): Phaser.Math.Vector2 {
+    return otherEntity.position.subtract(this.position);
+  }
+
+  public canAttack(otherEntity: MatterEntity): boolean {
+    const directionToAttackingEntity = this.attackingVector(otherEntity);
+    return directionToAttackingEntity.length() < this._ATTACKING_DISTANCE;
   }
 
   get sound(): Phaser.Sound.BaseSound {
@@ -76,6 +88,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     console.log('I am hit! health: ', this._health);
     if (this.dead) {
       console.log('I am dead!');
+      debugger;
       this._drops.forEach((drop) => {
         const newDropItem = new DropItem(this._mainScene, this.x, this.y, 'items', drop, 'pickup');
         this._mainScene.addDroppedItem(newDropItem);

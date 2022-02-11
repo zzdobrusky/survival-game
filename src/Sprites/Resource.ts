@@ -2,9 +2,7 @@ import MainScene from '../Scenes/MainScene';
 import MatterEntity from '../Types/MatterEntity';
 import { TileResource } from '../Types/TileResource';
 import { extractPropertyFromTile } from '../Tools/helpers';
-
-const CIRCLE_RADIUS = 15;
-const SENSING_CIRCLE_RADIUS = 19;
+import { RESOURCE_SIZES } from './constants';
 
 export default class Resource extends MatterEntity {
   public static preload(scene: Phaser.Scene): void {
@@ -29,8 +27,9 @@ export default class Resource extends MatterEntity {
       depth,
       drops,
       1,
-      CIRCLE_RADIUS,
-      SENSING_CIRCLE_RADIUS,
+      RESOURCE_SIZES.CIRCLE_RADIUS,
+      RESOURCE_SIZES.SENSING_CIRCLE_RADIUS,
+      RESOURCE_SIZES.ATTACKING_DISTANCE,
     );
 
     const yOrigin = tileResource.properties.find((p) => p.name === 'yOrigin').value;

@@ -1,5 +1,6 @@
 import MainScene from '../Scenes/MainScene';
 import MatterEntity from '../Types/MatterEntity';
+import { PLAYER_SIZES } from './constants';
 
 type KeyboardKeys = {
   upW: Phaser.Input.Keyboard.Key;
@@ -13,9 +14,6 @@ type KeyboardKeys = {
   EKey: Phaser.Input.Keyboard.Key;
   pointer: Phaser.Input.Pointer;
 };
-
-const CIRCLE_RADIUS = 10;
-const SENSING_CIRCLE_RADIUS = 10;
 
 export default class Player extends MatterEntity {
   private readonly _KEYS: KeyboardKeys;
@@ -40,7 +38,21 @@ export default class Player extends MatterEntity {
     texture: string | Phaser.Textures.Texture,
     frame: string | number,
   ) {
-    super(scene, x, y, texture, frame, 'player', 6, 0, [], 0.35, CIRCLE_RADIUS, SENSING_CIRCLE_RADIUS);
+    super(
+      scene,
+      x,
+      y,
+      texture,
+      frame,
+      'player',
+      6,
+      0,
+      [],
+      0.35,
+      PLAYER_SIZES.CIRCLE_RADIUS,
+      PLAYER_SIZES.SENSING_CIRCLE_RADIUS,
+      PLAYER_SIZES.ATTACKING_DISTANCE,
+    );
     this._sensingEntity = null;
     this._sensingEntities = [];
     // added WSAD keys
@@ -139,11 +151,9 @@ export default class Player extends MatterEntity {
   }
 
   private whackStuff(): void {
-    console.log('Player whackStuff: ', this._sensingEntity);
-    if (this._sensingEntity) {
+    if (this._sensingEntity && this.canAttack(this._sensingEntity)) {
       this._sensingEntity.hit();
       if (this._sensingEntity.dead) {
-        console.log('sensing resource is dead. Removing...');
         this.mainScene.removeSensingEntity(this._sensingEntity, this._sensingEntities);
       }
     }
