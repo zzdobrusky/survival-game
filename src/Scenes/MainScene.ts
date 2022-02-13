@@ -58,14 +58,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
   public update(): void {
-    this._player.update();
-    this._enemies.forEach((enemy) => enemy.update());
     // source sensing a player
     this._manageSensingWithResources.update();
     // enemies sensing a player
     this._manageSensingWithEnemies.update();
     // dropped items colliding with a player
     this._manageSensingWithDrops.update();
+    this._player.update();
+    this._enemies.forEach((enemy) => enemy.update());
   }
 
   public removeSensingEntity(sensingEntity: MatterEntity, sensingEntities: MatterEntity[]): void {

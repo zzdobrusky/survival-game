@@ -39,7 +39,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
     this._ATTACKING_DISTANCE = ATTACKING_DISTANCE;
     this.setCircle(this._CIRCLE_RADIUS);
     if (depth && typeof depth === 'number') this.setDepth(depth);
-    if (friction && friction < 1) this.setFriction(friction);
+    if (friction && friction < 1) this.setFriction(friction, 0.05);
     else this.setStatic(true);
 
     this.scene.add.existing(this);
@@ -85,10 +85,8 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   public hit(): void {
     this._health--;
     this._sound.play();
-    console.log('I am hit! health: ', this._health);
     if (this.dead) {
       console.log('I am dead!');
-      debugger;
       this._drops.forEach((drop) => {
         const newDropItem = new DropItem(this._mainScene, this.x, this.y, 'items', drop, 'pickup');
         this._mainScene.addDroppedItem(newDropItem);

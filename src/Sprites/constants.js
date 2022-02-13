@@ -4,7 +4,7 @@ export const ENEMY_SIZES = {
   ATTACKING_DISTANCE: 30,
 };
 
-export const ENEMY_BITE_FREQUENCY_MS = 700;
+export const ENEMY_BITE_FREQUENCY_MS = 900;
 
 export const PLAYER_SIZES = {
   CIRCLE_RADIUS: 10,

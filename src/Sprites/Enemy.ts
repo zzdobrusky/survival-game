@@ -32,7 +32,7 @@ export default class Enemy extends MatterEntity {
       health,
       0,
       drops,
-      0.36,
+      0.95,
       ENEMY_SIZES.CIRCLE_RADIUS,
       ENEMY_SIZES.SENSING_CIRCLE_RADIUS,
       ENEMY_SIZES.ATTACKING_DISTANCE,
@@ -46,13 +46,13 @@ export default class Enemy extends MatterEntity {
     // set up following a prey and attacking if too close
     if (this._prey) {
       if (this._attackTimer === null && this.canAttack(this._prey)) {
-        console.log('Enemy update canAttack');
         this._isAttacking = true;
+        console.log('Enemy update() new setInterval()');
         // stop running
         this.setVelocity(0, 0);
         this._attackTimer = setInterval(() => this.attack(), ENEMY_BITE_FREQUENCY_MS);
       } else if (this._attackTimer !== null && !this.canAttack(this._prey)) {
-        console.log('Enemy update cannot Attack');
+        console.log('Enemy update() setInterval() to null');
         this._isAttacking = false;
         clearInterval(this._attackTimer);
         this._attackTimer = null;
@@ -72,25 +72,16 @@ export default class Enemy extends MatterEntity {
   }
 
   public startHunting(prey: Player): void {
-    console.log('Enemy starHunting() prey: ', prey);
     this.sound.play();
     this._prey = prey;
   }
 
   public stopHunting(): void {
-    console.log('Enemy starHunting() prey: ', null);
     this._prey = null;
-    // stop running
-    this.setVelocity(0, 0);
   }
 
   public attack(): void {
-    // TODO: use attacking distance
-    console.log('Enemy attack() this._prey: ', this._prey);
     if (this._prey && this.canAttack(this._prey)) {
-      console.log('attacking a prey');
-      console.log('this._prey.dead: ', this._prey.dead);
-      console.log('this.dead: ', this.dead);
       if (this._prey.dead || this.dead) {
         clearInterval(this._attackTimer);
         this._attackTimer = null;
