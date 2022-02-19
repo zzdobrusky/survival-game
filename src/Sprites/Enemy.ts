@@ -65,6 +65,12 @@ export default class Enemy extends MatterEntity {
       }
     }
 
+    if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
+      this.anims.play(`${this.entityType}_walk`, true);
+    } else {
+      this.anims.play(`${this.entityType}_idle`, true);
+    }
+
     // fix for keeping player rotation constant
     this.setAngle(0);
     // keep enemy looking in the direction of moving

@@ -9,6 +9,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   private _CIRCLE_RADIUS: number;
   private _SENSING_CIRCLE_RADIUS: number;
   private _ATTACKING_DISTANCE: number;
+  private _entityType: string;
 
   constructor(
     scene: MainScene,
@@ -34,6 +35,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
 
     if (type) this._sound = scene.sound.add(type);
 
+    this._entityType = type;
     this._CIRCLE_RADIUS = COLLISION_CIRCLE_RADIUS;
     this._SENSING_CIRCLE_RADIUS = SENSING_CIRCLE_RADIUS;
     this._ATTACKING_DISTANCE = ATTACKING_DISTANCE;
@@ -52,6 +54,10 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite {
   public canAttack(otherEntity: MatterEntity): boolean {
     const directionToAttackingEntity = this.attackingVector(otherEntity);
     return directionToAttackingEntity.length() < this._ATTACKING_DISTANCE;
+  }
+
+  get entityType(): string {
+    return this._entityType;
   }
 
   get sound(): Phaser.Sound.BaseSound {
