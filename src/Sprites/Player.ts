@@ -23,6 +23,7 @@ export default class Player extends MatterEntity {
   private _weaponRotationDirection: number;
   private _sensingEntity: MatterEntity;
   private _sensingEntities: MatterEntity[];
+  private _pointMoveEvent: Phaser.Events.EventEmitter;
 
   public static preload(scene: Phaser.Scene): void {
     scene.load.atlas('female', 'assets/animations/female.png', 'assets/animations/female_atlas.json');
@@ -76,9 +77,22 @@ export default class Player extends MatterEntity {
     this._weaponRotationDirection = 1;
     this._playerDirection = 1;
     scene.add.existing(this._spriteWeapon);
+
+    this._pointMoveEvent = this.mainScene.input.on('pointermove', (pointer) => {
+      if (
+        (pointer.worldX < this.x && this._playerDirection === 1) ||
+        (pointer.worldX > this.x && this._playerDirection === -1)
+      ) {
+        this._playerDirection *= -1;
+        this.scaleX = this._playerDirection;
+        this._weaponRotationDirection *= -1;
+        this._spriteWeapon.scaleX = this._weaponRotationDirection;
+      }
+    });
   }
 
   public update(): void {
+    if (this.dead) return;
     const speed = 2.5;
     const playerVelocity = new Phaser.Math.Vector2();
 
@@ -131,18 +145,14 @@ export default class Player extends MatterEntity {
       this._weaponRotation = 0;
     }
     this._spriteWeapon.setAngle(this._weaponRotation);
+  }
 
-    this.mainScene.input.on('pointermove', (pointer) => {
-      if (
-        (pointer.worldX < this.x && this._playerDirection === 1) ||
-        (pointer.worldX > this.x && this._playerDirection === -1)
-      ) {
-        this._playerDirection *= -1;
-        this.scaleX = this._playerDirection;
-        this._weaponRotationDirection *= -1;
-        this._spriteWeapon.scaleX = this._weaponRotationDirection;
-      }
-    });
+  public onDeath(): void {
+    this.anims.stop();
+    this._pointMoveEvent.removeListener('pointermove');
+    this.setTexture('items', 0);
+    this.setOrigin(0.5);
+    this._spriteWeapon.destroy();
   }
 
   public setSensingEntity(sensingEntity: MatterEntity, sensingEntities: MatterEntity[]): void {

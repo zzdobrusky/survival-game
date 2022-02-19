@@ -47,12 +47,12 @@ export default class Enemy extends MatterEntity {
     if (this._prey) {
       if (this._attackTimer === null && this.canAttack(this._prey)) {
         this._isAttacking = true;
-        console.log('Enemy update() new setInterval()');
+        // console.log('Enemy update() new setInterval()');
         // stop running
         this.setVelocity(0, 0);
         this._attackTimer = setInterval(() => this.attack(), ENEMY_BITE_FREQUENCY_MS);
       } else if (this._attackTimer !== null && !this.canAttack(this._prey)) {
-        console.log('Enemy update() setInterval() to null');
+        // console.log('Enemy update() setInterval() to null');
         this._isAttacking = false;
         clearInterval(this._attackTimer);
         this._attackTimer = null;
@@ -72,11 +72,13 @@ export default class Enemy extends MatterEntity {
   }
 
   public startHunting(prey: Player): void {
+    console.log('Enemy startHunting()');
     this.sound.play();
     this._prey = prey;
   }
 
   public stopHunting(): void {
+    console.log('Enemy stopHunting()');
     this._prey = null;
   }
 
@@ -86,7 +88,7 @@ export default class Enemy extends MatterEntity {
         clearInterval(this._attackTimer);
         this._attackTimer = null;
       } else {
-        console.log('hitting a prey');
+        // console.log('hitting a prey');
         this._prey.hit();
       }
     }

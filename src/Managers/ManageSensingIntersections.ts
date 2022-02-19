@@ -36,13 +36,15 @@ export default class ManageSensingIntersections {
     });
 
     if (sensingEntity && !this._startedSensingIntersection) {
-      console.log('onSensingStarted() sensingEntity: ', sensingEntity);
+      // console.log('onSensingStarted() sensingEntity: ', sensingEntity);
       this._sensingEntity = sensingEntity;
       this._startedSensingIntersection = true;
       this._onSensingStarted && this._onSensingStarted(sensingEntity);
       this._player.setSensingEntity(sensingEntity, this._sensingEntities);
-    } else if (!sensingEntity && this._startedSensingIntersection) {
-      console.log('onSensingStopped() beforeStoppedSensingEntity: ', beforeStoppedSensingEntity);
+    }
+
+    if (!sensingEntity && this._startedSensingIntersection) {
+      // console.log('onSensingStopped() beforeStoppedSensingEntity: ', beforeStoppedSensingEntity);
 
       this._sensingEntity = null;
       this._startedSensingIntersection = false;
