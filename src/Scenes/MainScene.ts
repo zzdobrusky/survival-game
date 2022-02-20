@@ -55,6 +55,12 @@ export default class MainScene extends Phaser.Scene {
       (drop as DropItem).pickup();
       this.removeSensingEntity(drop, this._droppedItems);
     });
+    // manage camera
+    const camera = this.cameras.main;
+    camera.zoom = 2;
+    camera.startFollow(this._player);
+    camera.setLerp(0.1, 0.1);
+    camera.setBounds(0, 0, +this.game.config.width, +this.game.config.height);
   }
 
   public update(): void {
