@@ -61,6 +61,7 @@ export default class MainScene extends Phaser.Scene {
     camera.startFollow(this._player);
     camera.setLerp(0.1, 0.1);
     camera.setBounds(0, 0, +this.game.config.width, +this.game.config.height);
+    this.scene.launch('InventoryScene');
   }
 
   public update(): void {

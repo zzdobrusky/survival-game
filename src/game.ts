@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import InventoryScene from './Scenes/InventoryScene';
 import MainScene from './Scenes/MainScene';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
@@ -7,7 +8,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
   backgroundColor: '#333333',
   type: Phaser.AUTO,
   parent: 'survival-game',
-  scene: [MainScene],
+  scene: [MainScene, InventoryScene],
   scale: {
     zoom: 2,
   },
